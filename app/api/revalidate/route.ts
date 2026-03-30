@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Revalidate the tag matching the document type
-    revalidateTag(body._type)
+    revalidateTag(body._type, "max")
 
     return NextResponse.json({
       revalidated: true,
