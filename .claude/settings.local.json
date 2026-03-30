@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/llumi/.claude/**)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(grep -r sanityFetch /mnt/c/Users/JenJo/OneDrive/Documents/GitHub/candas-dorcey/node_modules/next-sanity/dist/ --include=*.d.ts -l)",
+      "Bash(mv styleguide:*)",
+      "Bash(mkdir -p \"\\(site\\)/books/[category]/[slug]\" \"\\(site\\)/books/[category]\" \"\\(site\\)/gallery/[slug]\" \"\\(site\\)/blog/[slug]\" \"\\(site\\)/events/[slug]\" \"\\(site\\)/about/interests\" \"\\(site\\)/about/freelance\" \"\\(site\\)/flat\" \"\\(site\\)/contact\")",
+      "Bash(ls /mnt/c/Users/JenJo/OneDrive/Documents/GitHub/candas-dorcey/app/\\\\\\(site\\\\\\)/styleguide/page.tsx)"
+    ]
+  },
+  "mcpServers": {
+    "sanity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/sanity-mcp-server@latest"
+      ],
+      "env": {
+        "SANITY_PROJECT_ID": "w2dzgzja",
+        "SANITY_DATASET": "production"
+      }
+    }
+  }
+}
