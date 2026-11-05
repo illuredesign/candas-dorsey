@@ -11,13 +11,12 @@
  * ══════════════════════════════════════════
  */
 
-@theme inline {
-  /* ── Fonts ── */
-  --font-sans: var(--font-eb-garamond), Georgia, serif;
-  --font-display: var(--font-bebas-neue), sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
-  --font-heading: var(--font-display);
-
+/*
+ * Raw palette lives in a non-inline `static` theme so Tailwind always emits the
+ * --color-* variables on :root. The styleguide reads them via var(--color-*);
+ * `@theme inline` would bake the values into utilities and emit no variables.
+ */
+@theme static {
   /* ── Palette: raw color tokens ── */
   --color-cadmium-yellow: oklch(0.805 0.163 88.6);
   --color-warm-gold: oklch(0.753 0.127 84.9);
@@ -40,6 +39,14 @@
   --color-cobalt-blue: oklch(0.481 0.163 261.6);         /* #2457B8 */
   --color-emerald-green: oklch(0.634 0.149 151.5);       /* #2FA35A */
   --color-leaf-green: oklch(0.666 0.164 132.6);          /* #6BA82E */
+}
+
+@theme inline {
+  /* ── Fonts ── */
+  --font-sans: var(--font-eb-garamond), Georgia, serif;
+  --font-display: var(--font-bebas-neue), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-heading: var(--font-display);
 
   /* ── Semantic: shadcn/ui mapped tokens ── */
   --color-background: var(--background);

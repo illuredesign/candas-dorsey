@@ -57,13 +57,13 @@ const allColors = [...primaryPalette, ...secondaryPalette, ...accentPalette]
 
 export default function StyleGuidePage() {
   return (
-    <div className="mx-auto max-w-[1100px] px-10 py-12 font-sans">
+    <div className="mx-auto max-w-[1100px] px-5 py-12 font-sans sm:px-10">
       {/* ═══ HEADER ═══ */}
-      <header className="mb-12 flex items-end justify-between border-b-[3px] border-night-soil pb-5">
-        <h1 className="font-display text-5xl leading-none tracking-[0.04em] text-night-soil">
+      <header className="mb-12 flex flex-col gap-4 border-b-[3px] border-night-soil pb-5 md:flex-row md:items-end md:justify-between">
+        <h1 className="font-display text-4xl leading-none sm:text-5xl tracking-[0.04em] text-night-soil">
           Mood Board<span className="text-label-red"> — Candas Jane Dorsey</span>
         </h1>
-        <div className="text-right font-mono text-[10px] uppercase leading-relaxed tracking-[0.1em] text-[#888]">
+        <div className="font-mono text-[10px] md:text-right uppercase leading-relaxed tracking-[0.1em] text-[#888]">
           Author Website · Phase 1 Deliverable
           <br />
           Prepared March 2026
@@ -80,7 +80,7 @@ export default function StyleGuidePage() {
         stock imagery or generic templates.
       </SectionNote>
 
-      <div className="mb-14 grid grid-cols-[1.3fr_0.9fr_0.8fr] gap-4">
+      <div className="mb-14 grid grid-cols-1 gap-4 sm:grid-cols-[1.3fr_0.9fr_0.8fr]">
         <SourceItem src="/img/dark-quin-br.webp" alt="Unsettled Day — acrylic on canvas" aspect="4/3">
           <SourceCaption title="Unsettled Day" sub="Acrylic on canvas · Hero background source" />
         </SourceItem>
@@ -101,14 +101,14 @@ export default function StyleGuidePage() {
       </SectionNote>
 
       {/* Primary row */}
-      <div className="mb-3 flex h-24">
+      <div className="mb-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7">
         {primaryPalette.map((c) => (
           <SwatchTile key={c.token} swatch={c} />
         ))}
       </div>
 
       {/* Secondary row */}
-      <div className="mb-3 flex h-[72px]">
+      <div className="mb-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
         {secondaryPalette.map((c) => (
           <SwatchTile key={c.token} swatch={c} />
         ))}
@@ -118,7 +118,7 @@ export default function StyleGuidePage() {
       <p className="mt-8 mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#999]">
         Accent Candidates — for comparison
       </p>
-      <div className="mb-8 flex h-24">
+      <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
         {accentPalette.map((c) => (
           <SwatchTile key={c.token} swatch={c} />
         ))}
@@ -128,7 +128,7 @@ export default function StyleGuidePage() {
       <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#999]">
         Full Spectrum — all colours together
       </p>
-      <div className="mb-8 flex h-10">
+      <div className="mb-8 flex h-10 ring-1 ring-night-soil/10">
         {allColors.map((c) => (
           <div
             key={c.token}
@@ -140,7 +140,7 @@ export default function StyleGuidePage() {
       </div>
 
       {/* Accents in context: dark and light grounds */}
-      <div className="mb-14 grid grid-cols-2 gap-4">
+      <div className="mb-14 grid grid-cols-1 gap-4 md:grid-cols-2">
         {[
           { label: "Accents on Night Soil", bg: INK, fg: PAPER },
           { label: "Accents on Canvas Cream", bg: PAPER, fg: INK },
@@ -149,7 +149,7 @@ export default function StyleGuidePage() {
             <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.15em] opacity-40">{ground.label}</p>
             <div className="flex flex-col gap-3">
               {[{ ...primaryPalette[0], name: "Cadmium Yellow (current)" }, ...accentPalette].map((c) => (
-                <div key={c.token} className="flex items-center gap-3">
+                <div key={c.token} className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span
                     className="w-[150px] shrink-0 px-3 pt-[5px] pb-[3px] font-display text-[13px] tracking-[0.1em]"
                     style={{ background: cssVar(c.token), color: c.light ? INK : PAPER }}
@@ -182,7 +182,7 @@ export default function StyleGuidePage() {
 
       <div className="mb-14">
         {/* Bebas Neue */}
-        <div className="mb-0.5 grid min-h-[100px] grid-cols-[200px_1fr]">
+        <div className="mb-0.5 grid min-h-[100px] grid-cols-1 sm:grid-cols-[200px_1fr]">
           <div className="flex flex-col justify-center bg-night-soil px-5 py-4">
             <h3 className="mb-1 font-mono text-[11px] font-medium tracking-[0.08em] text-warm-gold">
               Bebas Neue
@@ -198,7 +198,7 @@ export default function StyleGuidePage() {
             </p>
           </div>
           <div className="flex flex-col justify-center bg-warm-linen px-6 py-5">
-            <p className="mb-2 font-display text-[56px] leading-none tracking-[0.04em] text-night-soil">
+            <p className="mb-2 font-display text-[40px] leading-none sm:text-[56px] tracking-[0.04em] text-night-soil">
               WRITING ACROSS
             </p>
             <p className="font-display text-[28px] leading-tight tracking-[0.06em] text-label-red">
@@ -208,7 +208,7 @@ export default function StyleGuidePage() {
         </div>
 
         {/* EB Garamond */}
-        <div className="mb-0.5 grid min-h-[100px] grid-cols-[200px_1fr]">
+        <div className="mb-0.5 grid min-h-[100px] grid-cols-1 sm:grid-cols-[200px_1fr]">
           <div className="flex flex-col justify-center bg-night-soil px-5 py-4">
             <h3 className="mb-1 font-mono text-[11px] font-medium tracking-[0.08em] text-warm-gold">
               EB Garamond
@@ -235,7 +235,7 @@ export default function StyleGuidePage() {
         </div>
 
         {/* JetBrains Mono */}
-        <div className="grid min-h-[100px] grid-cols-[200px_1fr]">
+        <div className="grid min-h-[100px] grid-cols-1 sm:grid-cols-[200px_1fr]">
           <div className="flex flex-col justify-center bg-night-soil px-5 py-4">
             <h3 className="mb-1 font-mono text-[11px] font-medium tracking-[0.08em] text-warm-gold">
               JetBrains Mono
@@ -268,7 +268,7 @@ export default function StyleGuidePage() {
         fields, and dimensional shadow effects.
       </SectionNote>
 
-      <div className="mb-14 grid grid-cols-2 gap-4">
+      <div className="mb-14 grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Buttons — Dark */}
         <div className="bg-night-soil p-6 text-canvas-cream">
           <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.15em] text-canvas-cream/35">
@@ -357,7 +357,7 @@ export default function StyleGuidePage() {
         and print.
       </SectionNote>
 
-      <div className="mb-14 grid grid-cols-3 gap-4">
+      <div className="mb-14 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div
           className="relative flex h-[140px] items-end overflow-hidden p-3"
           style={{
@@ -399,7 +399,7 @@ export default function StyleGuidePage() {
       {/* ═══ 06 / DESIGN PRINCIPLES ═══ */}
       <SectionLabel>06 / Design Principles</SectionLabel>
 
-      <div className="mb-14 grid grid-cols-3 gap-6">
+      <div className="mb-14 grid grid-cols-1 gap-6 md:grid-cols-3">
         <Principle title="Her Work Is the Design">
           Every visual element traces back to Candas&apos;s own art and aesthetic. The fluid
           background is her painting. The typography is her collage style. The portrait is her
@@ -418,7 +418,7 @@ export default function StyleGuidePage() {
       </div>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="flex items-center justify-between border-t border-night-soil/15 pt-5">
+      <footer className="flex flex-col gap-2 border-t border-night-soil/15 pt-5 md:flex-row md:items-center md:justify-between">
         <p className="font-mono text-[10px] tracking-[0.05em] text-[#aaa]">
           Candas Jane Dorsey · Author Website · Phase 1 Mood Board
         </p>
@@ -435,7 +435,7 @@ export default function StyleGuidePage() {
 function SwatchTile({ swatch: c }: { swatch: Swatch }) {
   return (
     <div
-      className="flex flex-1 flex-col justify-end p-2.5 font-mono text-[9px] leading-snug"
+      className="flex min-h-24 flex-col justify-end p-2.5 font-mono text-[9px] leading-snug"
       style={{ background: cssVar(c.token), color: c.light ? INK : PAPER }}
     >
       <span className="tracking-[0.06em]">{c.name}</span>
