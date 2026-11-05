@@ -33,6 +33,14 @@
   --color-dark-maroon: oklch(0.245 0.060 36.4);
   --color-charcoal-warm: oklch(0.253 0.021 60.3);
 
+  /* ── Accent candidates (under review on /styleguide) ── */
+  --color-cadmium-yellow-pale: oklch(0.943 0.186 105.2); /* #FFF23A */
+  --color-cadmium-yellow-light: oklch(0.879 0.176 93.2); /* #FFD31A */
+  --color-cerulean-blue: oklch(0.624 0.133 242.4);       /* #2A8FD0 */
+  --color-cobalt-blue: oklch(0.481 0.163 261.6);         /* #2457B8 */
+  --color-emerald-green: oklch(0.634 0.149 151.5);       /* #2FA35A */
+  --color-leaf-green: oklch(0.666 0.164 132.6);          /* #6BA82E */
+
   /* ── Semantic: shadcn/ui mapped tokens ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);

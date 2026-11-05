@@ -6,25 +6,54 @@ export const metadata: Metadata = {
   robots: "noindex",
 }
 
-/* ── Palette data ── */
-const primaryPalette = [
-  { name: "Cadmium Yellow", hex: "#EAB80D", light: true },
-  { name: "Warm Gold", hex: "#D4A843", light: true },
-  { name: "Deep Amber", hex: "#C49E1A", light: true },
-  { name: "Burnt Sienna", hex: "#8B5520", light: false },
-  { name: "Label Red", hex: "#8B2020", light: false },
-  { name: "Burgundy", hex: "#5C1422", light: false },
-  { name: "Night Soil", hex: "#1A1008", light: false },
+/* ── Palette data ──
+ * Swatches render from the oklch tokens in app/globals.css via var(--color-<token>),
+ * so the mood board always shows exactly what the site uses. The oklch/hex strings
+ * here are display labels only — keep them in sync when a token changes.
+ */
+type Swatch = {
+  name: string
+  token: string
+  oklch: string
+  hex: string
+  light: boolean
+  note?: string
+}
+
+const cssVar = (token: string) => `var(--color-${token})`
+const INK = cssVar("night-soil")
+const PAPER = cssVar("canvas-cream")
+
+const primaryPalette: Swatch[] = [
+  { name: "Cadmium Yellow", token: "cadmium-yellow", oklch: "0.805 0.163 88.6", hex: "#EAB80D", light: true },
+  { name: "Warm Gold", token: "warm-gold", oklch: "0.753 0.127 84.9", hex: "#D4A843", light: true },
+  { name: "Deep Amber", token: "deep-amber", oklch: "0.714 0.140 90.6", hex: "#C49E1A", light: true },
+  { name: "Burnt Sienna", token: "burnt-sienna", oklch: "0.501 0.098 61.3", hex: "#8B5520", light: false },
+  { name: "Label Red", token: "label-red", oklch: "0.422 0.143 25.8", hex: "#8B2020", light: false },
+  { name: "Burgundy", token: "burgundy", oklch: "0.320 0.103 14.3", hex: "#5C1422", light: false },
+  { name: "Night Soil", token: "night-soil", oklch: "0.184 0.023 59.8", hex: "#1A1008", light: false },
 ]
 
-const secondaryPalette = [
-  { name: "Canvas Cream", hex: "#F5EDE0", light: true },
-  { name: "Warm Linen", hex: "#EDDFD0", light: true },
-  { name: "Text Light", hex: "#E8DFD0", light: true },
-  { name: "Russet", hex: "#8C5535", light: false },
-  { name: "Dark Maroon", hex: "#38140A", light: false },
-  { name: "Charcoal Warm", hex: "#2A2018", light: false },
+const secondaryPalette: Swatch[] = [
+  { name: "Canvas Cream", token: "canvas-cream", oklch: "0.949 0.019 80.1", hex: "#F5EDE0", light: true },
+  { name: "Warm Linen", token: "warm-linen", oklch: "0.911 0.025 69.4", hex: "#EDDFD0", light: true },
+  { name: "Text Light", token: "text-light", oklch: "0.907 0.022 80.7", hex: "#E8DFD0", light: true },
+  { name: "Russet", token: "russet", oklch: "0.505 0.087 50.0", hex: "#8C5535", light: false },
+  { name: "Dark Maroon", token: "dark-maroon", oklch: "0.245 0.060 36.4", hex: "#38140A", light: false },
+  { name: "Charcoal Warm", token: "charcoal-warm", oklch: "0.253 0.021 60.3", hex: "#2A2018", light: false },
 ]
+
+/* Accent candidates — brighter, pigment-true colours for comparison */
+const accentPalette: Swatch[] = [
+  { name: "Cadmium Yellow Pale", token: "cadmium-yellow-pale", oklch: "0.943 0.186 105.2", hex: "#FFF23A", light: true, note: "Brightest" },
+  { name: "Cadmium Yellow Light", token: "cadmium-yellow-light", oklch: "0.879 0.176 93.2", hex: "#FFD31A", light: true, note: "True cadmium" },
+  { name: "Cerulean Blue", token: "cerulean-blue", oklch: "0.624 0.133 242.4", hex: "#2A8FD0", light: true, note: "Sky / water" },
+  { name: "Cobalt Blue", token: "cobalt-blue", oklch: "0.481 0.163 261.6", hex: "#2457B8", light: false, note: "Deep, saturated" },
+  { name: "Emerald Green", token: "emerald-green", oklch: "0.634 0.149 151.5", hex: "#2FA35A", light: true, note: "Cool, jewel" },
+  { name: "Leaf Green", token: "leaf-green", oklch: "0.666 0.164 132.6", hex: "#6BA82E", light: true, note: "Warm, natural" },
+]
+
+const allColors = [...primaryPalette, ...secondaryPalette, ...accentPalette]
 
 export default function StyleGuidePage() {
   return (
@@ -67,55 +96,78 @@ export default function StyleGuidePage() {
       <SectionLabel>02 / Color Palette</SectionLabel>
       <SectionNote>
         Extracted from &ldquo;Unsettled Day&rdquo; and the broader body of visual work. Warm,
-        saturated, and unapologetically chromatic — no safe neutrals.
+        saturated, and unapologetically chromatic — no safe neutrals. Colours sit side by side as
+        flat, saturated fields with hard edges, never blended into gradients.
       </SectionNote>
 
       {/* Primary row */}
-      <div className="mb-3 flex h-20">
+      <div className="mb-3 flex h-24">
         {primaryPalette.map((c) => (
-          <div
-            key={c.hex}
-            className="flex flex-1 flex-col justify-end p-2.5"
-            style={{ background: c.hex }}
-          >
-            <span
-              className="font-mono text-[9px] tracking-[0.06em]"
-              style={{ color: c.light ? "#1A1008" : "#F5EDE0" }}
-            >
-              {c.name}
-            </span>
-            <span
-              className="font-mono text-[9px] opacity-60"
-              style={{ color: c.light ? "#1A1008" : "#F5EDE0" }}
-            >
-              {c.hex}
-            </span>
-          </div>
+          <SwatchTile key={c.token} swatch={c} />
         ))}
       </div>
 
       {/* Secondary row */}
-      <div className="mb-14 flex h-12">
+      <div className="mb-3 flex h-[72px]">
         {secondaryPalette.map((c) => (
+          <SwatchTile key={c.token} swatch={c} />
+        ))}
+      </div>
+
+      {/* Accent candidates row */}
+      <p className="mt-8 mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#999]">
+        Accent Candidates — for comparison
+      </p>
+      <div className="mb-8 flex h-24">
+        {accentPalette.map((c) => (
+          <SwatchTile key={c.token} swatch={c} />
+        ))}
+      </div>
+
+      {/* Full spectrum: every colour side by side */}
+      <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#999]">
+        Full Spectrum — all colours together
+      </p>
+      <div className="mb-8 flex h-10">
+        {allColors.map((c) => (
           <div
-            key={c.hex}
-            className="flex flex-1 items-center justify-start p-2.5"
-            style={{ background: c.hex }}
-          >
-            <span className="flex flex-col">
-              <span
-                className="font-mono text-[9px] tracking-[0.06em]"
-                style={{ color: c.light ? "#1A1008" : "#F5EDE0" }}
-              >
-                {c.name}
-              </span>
-              <span
-                className="font-mono text-[9px] opacity-60"
-                style={{ color: c.light ? "#1A1008" : "#F5EDE0" }}
-              >
-                {c.hex}
-              </span>
-            </span>
+            key={c.token}
+            className="flex-1"
+            style={{ background: cssVar(c.token) }}
+            title={`${c.name} · oklch(${c.oklch}) · ${c.hex}`}
+          />
+        ))}
+      </div>
+
+      {/* Accents in context: dark and light grounds */}
+      <div className="mb-14 grid grid-cols-2 gap-4">
+        {[
+          { label: "Accents on Night Soil", bg: INK, fg: PAPER },
+          { label: "Accents on Canvas Cream", bg: PAPER, fg: INK },
+        ].map((ground) => (
+          <div key={ground.label} className="p-6" style={{ background: ground.bg, color: ground.fg }}>
+            <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.15em] opacity-40">{ground.label}</p>
+            <div className="flex flex-col gap-3">
+              {[{ ...primaryPalette[0], name: "Cadmium Yellow (current)" }, ...accentPalette].map((c) => (
+                <div key={c.token} className="flex items-center gap-3">
+                  <span
+                    className="w-[150px] shrink-0 px-3 pt-[5px] pb-[3px] font-display text-[13px] tracking-[0.1em]"
+                    style={{ background: cssVar(c.token), color: c.light ? INK : PAPER }}
+                  >
+                    {c.name}
+                  </span>
+                  <span className="font-display text-xl tracking-[0.06em]" style={{ color: cssVar(c.token) }}>
+                    Black Wine
+                  </span>
+                  <span
+                    className="font-sans text-sm underline decoration-2 underline-offset-4"
+                    style={{ textDecorationColor: cssVar(c.token) }}
+                  >
+                    Read more
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
@@ -310,17 +362,17 @@ export default function StyleGuidePage() {
           className="relative flex h-[140px] items-end overflow-hidden p-3"
           style={{
             background:
-              "linear-gradient(135deg, #EAB80D 0%, #C49E1A 30%, #8B5520 60%, #5C1422 85%, #38140A 100%)",
+              `linear-gradient(135deg, ${cssVar("cadmium-yellow-pale")} 0 18%, ${cssVar("cadmium-yellow")} 18% 36%, ${cssVar("cerulean-blue")} 36% 52%, ${cssVar("label-red")} 52% 68%, ${cssVar("emerald-green")} 68% 84%, ${INK} 84% 100%)`,
           }}
         >
           <span className="relative z-[1] font-mono text-[10px] tracking-[0.1em] text-canvas-cream [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
-            Fluid Canvas (WebGL)
+            Hard-Edged Colour Blocks
           </span>
         </div>
         <div
           className="relative flex h-[140px] items-end overflow-hidden p-3"
           style={{
-            background: "#1A1008",
+            background: INK,
             backgroundImage:
               "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(245,237,224,0.03) 2px, rgba(245,237,224,0.03) 3px), repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(245,237,224,0.03) 2px, rgba(245,237,224,0.03) 3px)",
           }}
@@ -332,7 +384,7 @@ export default function StyleGuidePage() {
         <div
           className="relative flex h-[140px] items-end overflow-hidden p-3"
           style={{
-            background: "#2A2018",
+            background: cssVar("charcoal-warm"),
             backgroundImage:
               "radial-gradient(circle, rgba(245,237,224,0.4) 0.8px, transparent 0.8px)",
             backgroundSize: "4px 4px",
@@ -379,6 +431,22 @@ export default function StyleGuidePage() {
 }
 
 /* ── Reusable sub-components ── */
+
+function SwatchTile({ swatch: c }: { swatch: Swatch }) {
+  return (
+    <div
+      className="flex flex-1 flex-col justify-end p-2.5 font-mono text-[9px] leading-snug"
+      style={{ background: cssVar(c.token), color: c.light ? INK : PAPER }}
+    >
+      <span className="tracking-[0.06em]">{c.name}</span>
+      <span className="opacity-75">oklch({c.oklch})</span>
+      <span className="opacity-50">
+        {c.hex}
+        {c.note && ` · ${c.note}`}
+      </span>
+    </div>
+  )
+}
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
