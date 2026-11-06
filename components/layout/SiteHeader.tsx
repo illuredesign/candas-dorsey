@@ -13,6 +13,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+
+/** "/" only matches exactly; everything else matches itself and its children. */
+function isActive(pathname: string, href: string) {
+  const path = href.split("#")[0]
+  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`)
+}
 
 export default function SiteHeader({
   variant = "solid",
@@ -23,6 +30,13 @@ export default function SiteHeader({
   const [open, setOpen] = useState(false)
 
   const isTransparent = variant === "transparent"
+  const topLink = (active: boolean) =>
+    cn(
+      "inline-block px-3 py-2 font-display text-xs tracking-[0.1em] uppercase transition-colors",
+      isTransparent
+        ? active ? "text-canvas-cream" : "text-canvas-cream/60 hover:text-canvas-cream"
+        : active ? "text-foreground" : "text-foreground/70 hover:text-foreground",
+    )
 
   return (
     <header
@@ -44,29 +58,28 @@ export default function SiteHeader({
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           {mainNav.map((link) =>
             isNavGroup(link) ? (
               <div key={link.label} className="group relative">
-                <button
-                  className={`px-3 py-2 font-display text-xs tracking-[0.1em] uppercase transition-colors ${
-                    isTransparent
-                      ? "text-canvas-cream/60 hover:text-canvas-cream"
-                      : "text-foreground/70 hover:text-foreground"
-                  }`}
-                >
-                  {link.label}
-                </button>
-                <div className="invisible absolute top-full left-0 z-50 min-w-[180px] border border-foreground/10 bg-popover p-1 opacity-0 shadow-md transition-all group-hover:visible group-hover:opacity-100">
+                {link.href ? (
+                  <Link href={link.href} className={topLink(isActive(pathname, link.href))} aria-haspopup="true">
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button type="button" className={topLink(false)} aria-haspopup="true">
+                    {link.label}
+                  </button>
+                )}
+                <div className="invisible absolute top-full left-0 z-50 min-w-[200px] border border-foreground/10 bg-popover p-1 opacity-0 shadow-md transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                   {link.items.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`block px-3 py-2 font-sans text-sm transition-colors hover:bg-muted ${
-                        pathname === item.href
-                          ? "text-primary"
-                          : "text-foreground/70"
-                      }`}
+                      className={cn(
+                        "block px-3 py-2 font-sans text-sm transition-colors hover:bg-muted",
+                        pathname === item.href.split("#")[0] ? "text-primary" : "text-foreground/70",
+                      )}
                     >
                       {item.label}
                     </Link>
@@ -74,19 +87,7 @@ export default function SiteHeader({
                 </div>
               </div>
             ) : (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 font-display text-xs tracking-[0.1em] uppercase transition-colors ${
-                  isTransparent
-                    ? link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-                      ? "text-canvas-cream"
-                      : "text-canvas-cream/60 hover:text-canvas-cream"
-                    : link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-                      ? "text-foreground"
-                      : "text-foreground/70 hover:text-foreground"
-                }`}
-              >
+              <Link key={link.href} href={link.href} className={topLink(isActive(pathname, link.href))}>
                 {link.label}
               </Link>
             ),
@@ -105,13 +106,13 @@ export default function SiteHeader({
               <span className="sr-only">Open menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] bg-night-soil text-canvas-cream">
+          <SheetContent side="right" className="w-[280px] overflow-y-auto bg-night-soil text-canvas-cream">
             <SheetHeader>
               <SheetTitle className="font-display text-sm tracking-[0.15em] uppercase text-warm-gold">
                 Menu
               </SheetTitle>
             </SheetHeader>
-            <nav className="mt-6 flex flex-col gap-1 px-4">
+            <nav className="mt-6 flex flex-col gap-1 px-4" aria-label="Main">
               {mainNav.map((link) =>
                 isNavGroup(link) ? (
                   <div key={link.label} className="mb-2">
@@ -123,11 +124,10 @@ export default function SiteHeader({
                         key={item.href}
                         href={item.href}
                         onClick={() => setOpen(false)}
-                        className={`block py-2 pl-3 font-sans text-sm transition-colors hover:text-warm-gold ${
-                          pathname === item.href
-                            ? "text-warm-gold"
-                            : "text-canvas-cream/70"
-                        }`}
+                        className={cn(
+                          "block py-2 pl-3 font-sans text-sm transition-colors hover:text-warm-gold",
+                          pathname === item.href.split("#")[0] ? "text-warm-gold" : "text-canvas-cream/70",
+                        )}
                       >
                         {item.label}
                       </Link>
@@ -138,11 +138,10 @@ export default function SiteHeader({
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className={`py-2 font-display text-sm tracking-[0.1em] uppercase transition-colors hover:text-warm-gold ${
-                      link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-                        ? "text-warm-gold"
-                        : "text-canvas-cream/70"
-                    }`}
+                    className={cn(
+                      "py-2 font-display text-sm tracking-[0.1em] uppercase transition-colors hover:text-warm-gold",
+                      isActive(pathname, link.href) ? "text-warm-gold" : "text-canvas-cream/70",
+                    )}
                   >
                     {link.label}
                   </Link>

@@ -5,6 +5,7 @@ export type NavItem = {
 
 export type NavGroup = {
   label: string
+  href?: string
   items: NavItem[]
 }
 
@@ -16,23 +17,45 @@ function isNavGroup(link: NavLink): link is NavGroup {
 
 export { isNavGroup }
 
+/** Book category URL segment → Sanity `category` value. */
+export const bookCategorySlugs: Record<string, string> = {
+  novels: "novel",
+  "short-fiction": "shortFiction",
+  anthologies: "anthology",
+  poetry: "poetry",
+  other: "other",
+}
+
+/** Sanity `category` value → URL segment. */
+export const bookCategoryPaths: Record<string, string> = Object.fromEntries(
+  Object.entries(bookCategorySlugs).map(([path, value]) => [value, path]),
+)
+
 export const mainNav: NavLink[] = [
   {
     label: "Home",
     href: "/",
   },
   {
-    label: "Books",
+    label: "Writing",
+    href: "/books",
     items: [
+      { label: "All Books", href: "/books" },
       { label: "Novels", href: "/books/novels" },
       { label: "Short Fiction", href: "/books/short-fiction" },
       { label: "Anthologies", href: "/books/anthologies" },
       { label: "Poetry", href: "/books/poetry" },
+      { label: "Other Writing", href: "/writing" },
     ],
   },
   {
-    label: "Gallery",
+    label: "Art",
     href: "/gallery",
+    items: [
+      { label: "Gallery", href: "/gallery" },
+      { label: "Exhibitions", href: "/events#exhibitions" },
+      { label: "The FLAT Project", href: "/flat" },
+    ],
   },
   {
     label: "Blog",
@@ -44,11 +67,12 @@ export const mainNav: NavLink[] = [
   },
   {
     label: "About",
+    href: "/about",
     items: [
-      { label: "Who am I?", href: "/about" },
-      { label: "Interests", href: "/about/interests" },
-      { label: "Freelance Writing & Editing", href: "/about/freelance" },
-      { label: "The FLAT Project", href: "/flat" },
+      { label: "My Life and Not-So-Hard Times", href: "/about" },
+      { label: "Wooden Door & Associates", href: "/about/freelance" },
+      { label: "Candas-Adjacent", href: "/about/interests" },
+      { label: "Press Kit", href: "/about/press" },
     ],
   },
   {
@@ -59,19 +83,21 @@ export const mainNav: NavLink[] = [
 
 export const footerNav: NavGroup[] = [
   {
-    label: "Books",
+    label: "Writing",
     items: [
+      { label: "All Books", href: "/books" },
       { label: "Novels", href: "/books/novels" },
       { label: "Short Fiction", href: "/books/short-fiction" },
       { label: "Anthologies", href: "/books/anthologies" },
       { label: "Poetry", href: "/books/poetry" },
+      { label: "Other Writing", href: "/writing" },
     ],
   },
   {
-    label: "Gallery & Art",
+    label: "Art",
     items: [
       { label: "Gallery", href: "/gallery" },
-      { label: "Exhibitions", href: "/events" },
+      { label: "Exhibitions", href: "/events#exhibitions" },
       { label: "The FLAT Project", href: "/flat" },
     ],
   },
@@ -81,6 +107,7 @@ export const footerNav: NavGroup[] = [
       { label: "Blog", href: "/blog" },
       { label: "Events", href: "/events" },
       { label: "About", href: "/about" },
+      { label: "Press Kit", href: "/about/press" },
       { label: "Contact", href: "/contact" },
     ],
   },

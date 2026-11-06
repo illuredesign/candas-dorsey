@@ -26,6 +26,11 @@ export const review = defineType({
       description: 'Reviewer name, if known',
     }),
     defineField({
+      name: 'year',
+      title: 'Year',
+      type: 'string',
+    }),
+    defineField({
       name: 'url',
       title: 'URL',
       type: 'url',

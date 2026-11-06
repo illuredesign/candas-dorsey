@@ -1,6 +1,13 @@
 import {defineType, defineField} from 'sanity'
 import {FileIcon} from 'lucide-react'
 
+export const pageTypes = [
+  {title: 'Biography', value: 'bio'},
+  {title: 'Interests', value: 'interests'},
+  {title: 'Freelance', value: 'freelance'},
+  {title: 'Custom', value: 'custom'},
+]
+
 export const page = defineType({
   name: 'page',
   title: 'Page',
@@ -22,18 +29,21 @@ export const page = defineType({
     }),
     defineField({
       name: 'pageType',
-      title: 'Page Type',
+      title: 'Page type',
       type: 'string',
-      description: 'What kind of page is this?',
-      options: {
-        list: [
-          {title: 'Biography', value: 'bio'},
-          {title: 'Interests', value: 'interests'},
-          {title: 'Freelance', value: 'freelance'},
-          {title: 'Portfolio', value: 'portfolio'},
-          {title: 'Custom', value: 'custom'},
-        ],
-      },
+      options: {list: pageTypes},
+    }),
+    defineField({
+      name: 'parent',
+      title: 'Parent page',
+      type: 'reference',
+      to: [{type: 'page'}],
+      description: 'For sub-pages, e.g. "My past as a newspaper" under the biography',
+    }),
+    defineField({
+      name: 'featuredImage',
+      title: 'Featured image',
+      type: 'creditedImage',
     }),
     defineField({
       name: 'body',
@@ -42,58 +52,23 @@ export const page = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'featuredImage',
-      title: 'Featured Image',
-      type: 'image',
-      description: 'Optional hero or header image',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
-    }),
-    defineField({
-      name: 'isPasswordProtected',
-      title: 'Password Protected',
-      type: 'boolean',
-      description: 'Require a password to view this page',
-      initialValue: false,
-    }),
-    defineField({
       name: 'order',
-      title: 'Sort Order',
+      title: 'Sort order',
       type: 'number',
       validation: (Rule) => Rule.integer().min(0),
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Sharing',
+      type: 'seo',
+    }),
   ],
-  orderings: [
-    {
-      title: 'Sort Order',
-      name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
-    },
-  ],
+  orderings: [{title: 'Sort order', name: 'orderAsc', by: [{field: 'order', direction: 'asc'}]}],
   preview: {
-    select: {
-      title: 'title',
-      pageType: 'pageType',
-    },
-    prepare({title, pageType}) {
-      const typeLabels: Record<string, string> = {
-        bio: 'Biography',
-        interests: 'Interests',
-        freelance: 'Freelance',
-        portfolio: 'Portfolio',
-        custom: 'Custom',
-      }
-      return {
-        title,
-        subtitle: typeLabels[pageType] ?? pageType,
-      }
+    select: {title: 'title', pageType: 'pageType', parent: 'parent.title'},
+    prepare({title, pageType, parent}) {
+      const label = pageTypes.find((t) => t.value === pageType)?.title ?? pageType
+      return {title, subtitle: [parent && `under ${parent}`, label].filter(Boolean).join(' · ')}
     },
   },
 })

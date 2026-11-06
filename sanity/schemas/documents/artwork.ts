@@ -1,6 +1,13 @@
 import {defineType, defineField} from 'sanity'
 import {Palette} from 'lucide-react'
 
+export const artworkStatuses = [
+  {title: 'Available', value: 'available'},
+  {title: 'Sold', value: 'sold'},
+  {title: 'Private collection', value: 'privateCollection'},
+  {title: 'Not for sale', value: 'notForSale'},
+]
+
 export const artwork = defineType({
   name: 'artwork',
   title: 'Artwork',
@@ -8,14 +15,13 @@ export const artwork = defineType({
   icon: Palette,
   groups: [
     {name: 'details', title: 'Details', default: true},
-    {name: 'sale', title: 'Sale Info'},
+    {name: 'sale', title: 'Availability'},
   ],
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-      description: 'Title of the artwork',
       group: 'details',
       validation: (Rule) => Rule.required().max(200),
     }),
@@ -23,40 +29,30 @@ export const artwork = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      description: 'URL: /gallery/<slug>',
       group: 'details',
       options: {source: 'title', maxLength: 96},
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'category',
-      title: 'Gallery Category',
+      title: 'Gallery category',
       type: 'reference',
       to: [{type: 'galleryCategory'}],
-      description: 'Which gallery category does this belong to?',
       group: 'details',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'image',
+      type: 'creditedImage',
       description: 'High-quality photo of the artwork',
       group: 'details',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          description: 'Describe the artwork for accessibility',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'year',
-      title: 'Year Created',
+      title: 'Year created',
       type: 'string',
       group: 'details',
     }),
@@ -71,7 +67,14 @@ export const artwork = defineType({
       name: 'dimensions',
       title: 'Dimensions',
       type: 'string',
-      description: 'e.g. "24 x 36 inches"',
+      description: 'e.g. "24 × 36 in" or "61 × 91 cm"',
+      group: 'details',
+    }),
+    defineField({
+      name: 'series',
+      title: 'Series',
+      type: 'string',
+      description: 'Optional grouping, e.g. "Collage Words"',
       group: 'details',
     }),
     defineField({
@@ -82,63 +85,46 @@ export const artwork = defineType({
       group: 'details',
     }),
     defineField({
-      name: 'isForSale',
-      title: 'For Sale',
-      type: 'boolean',
-      description: 'Is this piece currently available for purchase?',
-      group: 'sale',
-      initialValue: false,
-    }),
-    defineField({
-      name: 'price',
-      title: 'Price',
-      type: 'number',
-      description: 'Price in CAD (for future Stripe integration)',
-      group: 'sale',
-      hidden: ({document}) => !document?.isForSale,
-    }),
-    defineField({
       name: 'watermarkImage',
-      title: 'Apply Watermark',
+      title: 'Apply watermark',
       type: 'boolean',
-      description: 'Whether to apply a watermark overlay when displaying this image',
+      description: 'Overlay a watermark when displaying this image',
       group: 'details',
       initialValue: true,
     }),
     defineField({
       name: 'order',
-      title: 'Sort Order',
+      title: 'Sort order',
       type: 'number',
-      description: 'Sort order within its category (lower numbers appear first)',
+      description: 'Within its category; lower numbers appear first',
       group: 'details',
       validation: (Rule) => Rule.integer().min(0),
     }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      group: 'sale',
+      options: {list: artworkStatuses, layout: 'radio'},
+      initialValue: 'notForSale',
+    }),
+    defineField({
+      name: 'price',
+      title: 'Price (CAD)',
+      type: 'number',
+      description: 'Shown only when status is Available. Used by Stage 2 checkout.',
+      group: 'sale',
+      hidden: ({document}) => document?.status !== 'available',
+    }),
   ],
   orderings: [
-    {
-      title: 'Sort Order',
-      name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
-    },
-    {
-      title: 'Title A-Z',
-      name: 'titleAsc',
-      by: [{field: 'title', direction: 'asc'}],
-    },
+    {title: 'Sort order', name: 'orderAsc', by: [{field: 'order', direction: 'asc'}]},
+    {title: 'Title A–Z', name: 'titleAsc', by: [{field: 'title', direction: 'asc'}]},
   ],
   preview: {
-    select: {
-      title: 'title',
-      categoryTitle: 'category.title',
-      year: 'year',
-      media: 'image',
-    },
+    select: {title: 'title', categoryTitle: 'category.title', year: 'year', media: 'image'},
     prepare({title, categoryTitle, year, media}) {
-      return {
-        title,
-        subtitle: [categoryTitle, year].filter(Boolean).join(' · '),
-        media,
-      }
+      return {title, subtitle: [categoryTitle, year].filter(Boolean).join(' · '), media}
     },
   },
 })

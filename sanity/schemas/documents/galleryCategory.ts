@@ -43,17 +43,8 @@ export const galleryCategory = defineType({
     defineField({
       name: 'coverImage',
       title: 'Cover Image',
-      type: 'image',
+      type: 'creditedImage',
       description: 'Representative image for the category thumbnail',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
     }),
   ],
   orderings: [

@@ -41,17 +41,8 @@ export const blogPost = defineType({
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
-      type: 'image',
+      type: 'creditedImage',
       description: 'Optional hero image for the post',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
     }),
     defineField({
       name: 'excerpt',
@@ -73,6 +64,11 @@ export const blogPost = defineType({
       type: 'boolean',
       description: 'Pin this post to the top of the blog',
       initialValue: false,
+    }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Sharing',
+      type: 'seo',
     }),
   ],
   orderings: [

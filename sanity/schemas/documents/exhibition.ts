@@ -48,16 +48,7 @@ export const exhibition = defineType({
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
-      type: 'image',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
+      type: 'creditedImage',
     }),
     defineField({
       name: 'artworks',
@@ -70,12 +61,6 @@ export const exhibition = defineType({
           to: [{type: 'artwork'}],
         }),
       ],
-    }),
-    defineField({
-      name: 'isUpcoming',
-      title: 'Upcoming',
-      type: 'boolean',
-      initialValue: false,
     }),
     defineField({
       name: 'externalUrl',

@@ -1,4 +1,4 @@
-import {defineType, defineField} from 'sanity'
+import {defineType, defineField, defineArrayMember} from 'sanity'
 import {Settings} from 'lucide-react'
 
 export const siteSettings = defineType({
@@ -14,93 +14,73 @@ export const siteSettings = defineType({
   fields: [
     defineField({
       name: 'siteTitle',
-      title: 'Site Title',
+      title: 'Site title',
       type: 'string',
       group: 'general',
       initialValue: 'Candas Jane Dorsey',
     }),
     defineField({
       name: 'siteDescription',
-      title: 'Site Description',
+      title: 'Site description',
       type: 'text',
-      description: 'Meta description and tagline for the site',
+      rows: 3,
+      description: 'Default meta description and tagline',
       group: 'general',
     }),
     defineField({
-      name: 'heroTagline',
-      title: 'Hero Tagline',
-      type: 'string',
-      description: 'Main heading text displayed in the hero section',
-      group: 'hero',
-    }),
-    defineField({
-      name: 'heroSubtitle',
-      title: 'Hero Subtitle',
-      type: 'text',
-      description: 'Supporting text below the hero heading',
-      group: 'hero',
-    }),
-    defineField({
-      name: 'socialLinks',
-      title: 'Social Links',
-      type: 'object',
-      group: 'social',
-      fields: [
-        defineField({
-          name: 'facebook',
-          title: 'Facebook',
-          type: 'url',
-          validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
-        }),
-        defineField({
-          name: 'twitter',
-          title: 'Twitter / X',
-          type: 'url',
-          validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
-        }),
-        defineField({
-          name: 'bluesky',
-          title: 'Bluesky',
-          type: 'url',
-          validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
-        }),
-      ],
-    }),
-    defineField({
-      name: 'woodenDoorUrl',
-      title: 'Wooden Door & Associates URL',
-      type: 'url',
-      description: 'Link to Wooden Door & Associates website',
-      group: 'social',
-      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
+      name: 'ogImage',
+      title: 'Default share image',
+      type: 'image',
+      description: 'Used when a page has no image of its own (1200×630 recommended)',
+      group: 'general',
     }),
     defineField({
       name: 'contactEmail',
-      title: 'Contact Email',
+      title: 'Contact email',
       type: 'string',
-      description: 'Email for contact form delivery (never displayed publicly)',
+      description: 'Where contact-form messages are delivered (never shown publicly)',
       group: 'general',
       validation: (Rule) => Rule.email(),
     }),
     defineField({
       name: 'footerText',
-      title: 'Footer Text',
+      title: 'Footer text',
       type: 'text',
+      rows: 2,
       group: 'general',
     }),
     defineField({
-      name: 'ogImage',
-      title: 'Default Open Graph Image',
-      type: 'image',
-      description: 'Default social sharing image when no specific image is available',
-      group: 'general',
+      name: 'heroTagline',
+      title: 'Hero tagline',
+      type: 'string',
+      description: 'Main heading in the hero section',
+      group: 'hero',
+    }),
+    defineField({
+      name: 'heroSubtitle',
+      title: 'Hero subtitle',
+      type: 'text',
+      rows: 2,
+      group: 'hero',
+    }),
+    defineField({
+      name: 'socialLinks',
+      title: 'Social links',
+      type: 'array',
+      group: 'social',
+      of: [defineArrayMember({type: 'socialLink'})],
+    }),
+    defineField({
+      name: 'woodenDoorUrl',
+      title: 'Wooden Door & Associates URL',
+      type: 'url',
+      group: 'social',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
   ],
   preview: {
     prepare() {
-      return {
-        title: 'Site Settings',
-      }
+      return {title: 'Site Settings'}
     },
   },
 })

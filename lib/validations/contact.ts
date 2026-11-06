@@ -14,6 +14,8 @@ export const contactSchema = z.object({
     .string()
     .min(10, "Message must be at least 10 characters.")
     .max(5000, "Message must be under 5,000 characters."),
+  /** Honeypot — real users never see this field, so it must stay empty. */
+  website: z.string().max(0, "Spam check failed.").optional(),
 })
 
 export type ContactFormData = z.infer<typeof contactSchema>

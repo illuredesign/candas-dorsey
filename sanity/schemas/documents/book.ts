@@ -1,6 +1,14 @@
 import {defineType, defineField, defineArrayMember} from 'sanity'
 import {BookOpen} from 'lucide-react'
 
+export const bookCategories = [
+  {title: 'Novel', value: 'novel'},
+  {title: 'Short Fiction Collection', value: 'shortFiction'},
+  {title: 'Anthology (edited)', value: 'anthology'},
+  {title: 'Poetry', value: 'poetry'},
+  {title: 'Other', value: 'other'},
+]
+
 export const book = defineType({
   name: 'book',
   title: 'Book',
@@ -9,23 +17,31 @@ export const book = defineType({
   groups: [
     {name: 'details', title: 'Details', default: true},
     {name: 'content', title: 'Content'},
+    {name: 'editions', title: 'Editions'},
     {name: 'reviews', title: 'Reviews & Awards'},
-    {name: 'purchase', title: 'Purchase Links'},
+    {name: 'purchase', title: 'Where to Buy'},
+    {name: 'seo', title: 'SEO'},
   ],
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-      description: 'The book title',
       group: 'details',
       validation: (Rule) => Rule.required().max(200),
+    }),
+    defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'string',
+      description: 'e.g. "and other stories"',
+      group: 'details',
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-friendly identifier (auto-generated from title)',
+      description: 'URL: /books/<slug>',
       group: 'details',
       options: {source: 'title', maxLength: 96},
       validation: (Rule) => Rule.required(),
@@ -34,63 +50,87 @@ export const book = defineType({
       name: 'category',
       title: 'Category',
       type: 'string',
-      description: 'What type of publication is this?',
       group: 'details',
-      options: {
-        list: [
-          {title: 'Novel', value: 'novel'},
-          {title: 'Short Fiction Collection', value: 'shortFiction'},
-          {title: 'Anthology', value: 'anthology'},
-          {title: 'Poetry', value: 'poetry'},
-          {title: 'Other', value: 'other'},
-        ],
-        layout: 'radio',
-      },
+      options: {list: bookCategories, layout: 'radio'},
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'genre',
       title: 'Genre',
       type: 'string',
-      description: 'e.g. "Speculative Fiction", "Mystery", "Young Adult", "Mainstream"',
+      description: 'e.g. "Speculative fiction", "Mystery", "Young adult"',
       group: 'details',
     }),
     defineField({
       name: 'year',
-      title: 'Publication Year',
+      title: 'First publication year',
       type: 'string',
-      description: 'Year of publication (use "Forthcoming" for upcoming titles)',
       group: 'details',
+    }),
+    defineField({
+      name: 'publisher',
+      title: 'Original publisher',
+      type: 'string',
+      group: 'details',
+    }),
+    defineField({
+      name: 'coAuthors',
+      title: 'Co-authors / co-editors',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+      description: 'Other people credited on the cover',
+      group: 'details',
+    }),
+    defineField({
+      name: 'isUpcoming',
+      title: 'Forthcoming',
+      type: 'boolean',
+      description: 'Not yet published — shown under Upcoming Publications',
+      group: 'details',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'order',
+      title: 'Sort order',
+      type: 'number',
+      description: 'Within its category; lower numbers appear first',
+      group: 'details',
+      validation: (Rule) => Rule.integer().min(0),
     }),
     defineField({
       name: 'coverImage',
-      title: 'Cover Image',
-      type: 'image',
+      title: 'Cover image',
+      type: 'creditedImage',
       group: 'details',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          description: 'Describe the cover for accessibility',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Write-up',
       type: 'blockContent',
-      description: 'Synopsis or write-up about the book',
+      description: 'Synopsis or notes about the book',
       group: 'content',
     }),
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
       type: 'blockContent',
-      description: 'A sample passage from the book',
+      description: 'A sample passage (or intro/outro excerpt for anthologies)',
       group: 'content',
+    }),
+    defineField({
+      name: 'relatedBooks',
+      title: 'Related books',
+      type: 'array',
+      group: 'content',
+      of: [defineArrayMember({type: 'reference', to: [{type: 'book'}]})],
+    }),
+    defineField({
+      name: 'editions',
+      title: 'Editions',
+      type: 'array',
+      description: 'Each printing, translation, e-book or audiobook',
+      group: 'editions',
+      of: [defineArrayMember({type: 'edition'})],
     }),
     defineField({
       name: 'reviews',
@@ -108,81 +148,28 @@ export const book = defineType({
     }),
     defineField({
       name: 'purchaseLinks',
-      title: 'Purchase Links',
+      title: 'Where to buy',
       type: 'array',
-      description: 'Where readers can buy this book',
       group: 'purchase',
       of: [defineArrayMember({type: 'purchaseLink'})],
     }),
     defineField({
-      name: 'isUpcoming',
-      title: 'Upcoming / Forthcoming',
-      type: 'boolean',
-      description: 'Flag this book as not yet published',
-      group: 'details',
-      initialValue: false,
-    }),
-    defineField({
-      name: 'order',
-      title: 'Sort Order',
-      type: 'number',
-      description: 'Manual sort order within its category (lower numbers appear first)',
-      group: 'details',
-      validation: (Rule) => Rule.integer().min(0),
-    }),
-    defineField({
-      name: 'relatedBooks',
-      title: 'Related Books',
-      type: 'array',
-      description: 'Other books by Candas to link to',
-      group: 'content',
-      of: [
-        defineArrayMember({
-          type: 'reference',
-          to: [{type: 'book'}],
-        }),
-      ],
+      name: 'seo',
+      title: 'SEO & Sharing',
+      type: 'seo',
+      group: 'seo',
     }),
   ],
   orderings: [
-    {
-      title: 'Sort Order',
-      name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
-    },
-    {
-      title: 'Publication Year (Newest)',
-      name: 'yearDesc',
-      by: [{field: 'year', direction: 'desc'}],
-    },
-    {
-      title: 'Title A-Z',
-      name: 'titleAsc',
-      by: [{field: 'title', direction: 'asc'}],
-    },
+    {title: 'Sort order', name: 'orderAsc', by: [{field: 'order', direction: 'asc'}]},
+    {title: 'Year (newest)', name: 'yearDesc', by: [{field: 'year', direction: 'desc'}]},
+    {title: 'Title A–Z', name: 'titleAsc', by: [{field: 'title', direction: 'asc'}]},
   ],
   preview: {
-    select: {
-      title: 'title',
-      category: 'category',
-      year: 'year',
-      media: 'coverImage',
-    },
+    select: {title: 'title', category: 'category', year: 'year', media: 'coverImage'},
     prepare({title, category, year, media}) {
-      const categoryLabels: Record<string, string> = {
-        novel: 'Novel',
-        shortFiction: 'Short Fiction',
-        anthology: 'Anthology',
-        poetry: 'Poetry',
-        other: 'Other',
-      }
-      return {
-        title,
-        subtitle: [categoryLabels[category] ?? category, year]
-          .filter(Boolean)
-          .join(' · '),
-        media,
-      }
+      const label = bookCategories.find((c) => c.value === category)?.title ?? category
+      return {title, subtitle: [label, year].filter(Boolean).join(' · '), media}
     },
   },
 })

@@ -29,16 +29,7 @@ export const flatProject = defineType({
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
-      type: 'image',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
+      type: 'creditedImage',
     }),
   ],
   preview: {

@@ -97,17 +97,8 @@ export const event = defineType({
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
-      type: 'image',
+      type: 'creditedImage',
       group: 'content',
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt text',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
     }),
     defineField({
       name: 'relatedBooks',
@@ -121,14 +112,6 @@ export const event = defineType({
           to: [{type: 'book'}],
         }),
       ],
-    }),
-    defineField({
-      name: 'isUpcoming',
-      title: 'Upcoming',
-      type: 'boolean',
-      description: 'Is this event in the future?',
-      group: 'details',
-      initialValue: true,
     }),
     defineField({
       name: 'externalUrl',

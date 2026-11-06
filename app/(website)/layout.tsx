@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Bebas_Neue, EB_Garamond, JetBrains_Mono } from "next/font/google"
 import { SanityLive } from "@/sanity/lib/live"
+import { siteUrl } from "@/lib/site"
 import "../globals.css"
 
 const bebasNeue = Bebas_Neue({
@@ -23,6 +24,7 @@ const jetBrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Candas Jane Dorsey",
     template: "%s — Candas Jane Dorsey",
