@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated seed images (built by scripts/build-seed-content.mjs)
+/sanity/seed-assets

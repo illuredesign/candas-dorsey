@@ -41,7 +41,12 @@ export default function ArtworkCard({
           </Link>
         </h3>
         <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-foreground/50">
-          {[artwork.medium, artwork.year, artwork.status && artwork.status !== "available" && formatArtworkStatus(artwork.status)]
+          {[
+            artwork.medium,
+            artwork.year,
+            // Only call out pieces that have left the studio; "not for sale" is the quiet default.
+            (artwork.status === "sold" || artwork.status === "privateCollection") && formatArtworkStatus(artwork.status),
+          ]
             .filter(Boolean)
             .join(" · ")}
         </p>
