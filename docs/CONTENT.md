@@ -66,6 +66,11 @@ Three faces: EB Garamond carries display *and* body text (`.display-hero` … `.
 Colour is flat and hard-edged: canvas-cream, night-soil, label-red, cadmium-yellow,
 cobalt-blue, emerald-green (availability). No gradients, no tinted overlays; text never
 uses opacity for "grey" (use `text-ink-soft` / `text-ink-mute`, which pass 4.5:1).
+The one deliberate exception is the home hero: a slowly moving WebGL painting
+(`components/hero/FluidCanvas.tsx`, shown through `HeroCanvas.tsx`) with the halftone
+portrait multiplied into it, the stacked WRITING/ACROSS column and a compact cream type
+block. Keep it; iterate on it in place. The font variables are set on `<html>` in
+`app/layout.tsx`; the `--ff-*` stacks in `:root` depend on that.
 One container (`.container-x`) and one reveal recipe (`components/motion/Reveal.tsx`,
 fade + 24px rise, once, honours reduced motion). Pages take a `tone` so each section of
 the site has its own colour field: books = ink, gallery = blue, events = red,
