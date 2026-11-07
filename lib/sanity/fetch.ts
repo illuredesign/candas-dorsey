@@ -78,7 +78,7 @@ export const getSiteSettings = () =>
 
 // ── Home ──
 export const getHomeData = () =>
-  fetchTyped<T.HomeData>(q.homeQuery, {}, ["book", "event", "blogPost"])
+  fetchTyped<T.HomeData>(q.homeQuery, {}, ["book", "event", "exhibition", "blogPost", "artwork", "galleryCategory", "page"])
 
 /**
  * Plain client reads for build-time work (sitemap, static params) and

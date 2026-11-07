@@ -38,7 +38,7 @@ export default async function PressKitPage() {
               bio.text && (
                 <section key={bio.label}>
                   <SectionHeading title={bio.label} />
-                  <p className="max-w-prose font-sans text-[17px] leading-[1.75]">{bio.text}</p>
+                  <p className="body-lg max-w-[62ch]">{bio.text}</p>
                   <CopyButton text={bio.text} className="mt-4" />
                 </section>
               ),
@@ -54,7 +54,7 @@ export default async function PressKitPage() {
           {kit.headshots?.length ? (
             <section>
               <SectionHeading title="Photos" />
-              <p className="mb-6 max-w-prose font-sans text-sm text-foreground/60">
+              <p className="mb-6 max-w-prose font-sans text-base text-ink-soft">
                 Full-resolution files. Please use the credit shown with each photo.
               </p>
               <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
@@ -63,9 +63,9 @@ export default async function PressKitPage() {
                     <div className="relative aspect-[3/4] overflow-hidden bg-warm-linen">
                       <SanityImage image={h} width={400} height={533} fill sizes="(max-width: 768px) 50vw, 300px" />
                     </div>
-                    <figcaption className="font-mono text-[10px] tracking-[0.08em] text-foreground/60">
+                    <figcaption className="meta text-ink-soft">
                       {h.credit ? `Photo: ${h.credit}` : h.caption ?? h.alt}
-                      {h.width && h.height && <span className="block text-foreground/40">{h.width} × {h.height}px · {formatFileSize(h.size)}</span>}
+                      {h.width && h.height && <span className="block text-ink-mute">{h.width} × {h.height}px · {formatFileSize(h.size)}</span>}
                     </figcaption>
                     {h.url && (
                       <Button variant="outline" size="sm" asChild>
@@ -84,7 +84,7 @@ export default async function PressKitPage() {
               <ul className="divide-y divide-foreground/10 border-y border-foreground/10">
                 {kit.files.map((f, i) => (
                   <li key={f._key ?? i} className="flex items-center justify-between gap-4 py-3">
-                    <span className="font-sans">{f.title}<span className="ml-2 font-mono text-[10px] uppercase text-foreground/40">{[f.extension, formatFileSize(f.size)].filter(Boolean).join(" · ")}</span></span>
+                    <span className="font-sans">{f.title}<span className="ml-2 meta uppercase text-ink-soft">{[f.extension, formatFileSize(f.size)].filter(Boolean).join(" · ")}</span></span>
                     {f.url && (
                       <Button variant="outline" size="sm" asChild>
                         <a href={`${f.url}?dl=`} download>Download</a>

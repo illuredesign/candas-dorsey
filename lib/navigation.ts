@@ -1,6 +1,8 @@
 export type NavItem = {
   label: string
   href: string
+  /** Short line shown under the label in menus. */
+  hint?: string
 }
 
 export type NavGroup = {
@@ -33,26 +35,22 @@ export const bookCategoryPaths: Record<string, string> = Object.fromEntries(
 
 export const mainNav: NavLink[] = [
   {
-    label: "Home",
-    href: "/",
-  },
-  {
     label: "Writing",
     href: "/books",
     items: [
-      { label: "All Books", href: "/books" },
+      { label: "All Books", href: "/books", hint: "Every title, shelf by shelf" },
       { label: "Novels", href: "/books/novels" },
       { label: "Short Fiction", href: "/books/short-fiction" },
       { label: "Anthologies", href: "/books/anthologies" },
       { label: "Poetry", href: "/books/poetry" },
-      { label: "Other Writing", href: "/writing" },
+      { label: "Other Writing", href: "/writing", hint: "Stories, poems and essays to read here" },
     ],
   },
   {
     label: "Art",
     href: "/gallery",
     items: [
-      { label: "Gallery", href: "/gallery" },
+      { label: "Gallery", href: "/gallery", hint: "Paintings, drawings, collage, photographs" },
       { label: "Exhibitions", href: "/events#exhibitions" },
       { label: "The FLAT Project", href: "/flat" },
     ],
@@ -69,10 +67,10 @@ export const mainNav: NavLink[] = [
     label: "About",
     href: "/about",
     items: [
-      { label: "My Life and Not-So-Hard Times", href: "/about" },
-      { label: "Wooden Door & Associates", href: "/about/freelance" },
-      { label: "Candas-Adjacent", href: "/about/interests" },
-      { label: "Press Kit", href: "/about/press" },
+      { label: "My Life and Not-So-Hard Times", href: "/about", hint: "The biography" },
+      { label: "Wooden Door & Associates", href: "/about/freelance", hint: "Editing, writing and consulting" },
+      { label: "Candas-Adjacent", href: "/about/interests", hint: "Community, morris, links" },
+      { label: "Press Kit", href: "/about/press", hint: "Bios and photos for media" },
     ],
   },
   {

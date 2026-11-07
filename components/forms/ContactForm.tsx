@@ -22,7 +22,7 @@ export default function ContactForm({ defaultSubject = "" }: { defaultSubject?: 
     return (
       <div className="border-t-2 border-emerald-green pt-6" role="status">
         <p className="font-display text-2xl tracking-[0.04em] text-foreground">Message sent.</p>
-        <p className="mt-2 font-sans text-base text-foreground/70">{state.message}</p>
+        <p className="mt-2 font-sans text-base text-ink-soft">{state.message}</p>
       </div>
     )
   }
@@ -37,23 +37,23 @@ export default function ContactForm({ defaultSubject = "" }: { defaultSubject?: 
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <Label htmlFor="name" className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.15em]">Name</Label>
+          <Label htmlFor="name" className="eyebrow mb-2 block text-ink-soft">Name</Label>
           <Input id="name" name="name" required autoComplete="name" aria-invalid={!!state.errors?.name} />
           <FieldError errors={state.errors?.name} />
         </div>
         <div>
-          <Label htmlFor="email" className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.15em]">Email</Label>
+          <Label htmlFor="email" className="eyebrow mb-2 block text-ink-soft">Email</Label>
           <Input id="email" name="email" type="email" required autoComplete="email" aria-invalid={!!state.errors?.email} />
           <FieldError errors={state.errors?.email} />
         </div>
       </div>
       <div>
-        <Label htmlFor="subject" className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.15em]">Subject</Label>
+        <Label htmlFor="subject" className="eyebrow mb-2 block text-ink-soft">Subject</Label>
         <Input id="subject" name="subject" required defaultValue={defaultSubject} aria-invalid={!!state.errors?.subject} />
         <FieldError errors={state.errors?.subject} />
       </div>
       <div>
-        <Label htmlFor="message" className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.15em]">Message</Label>
+        <Label htmlFor="message" className="eyebrow mb-2 block text-ink-soft">Message</Label>
         <Textarea id="message" name="message" required rows={7} aria-invalid={!!state.errors?.message} />
         <FieldError errors={state.errors?.message} />
       </div>

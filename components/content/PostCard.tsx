@@ -1,6 +1,5 @@
 import Link from "next/link"
 import SanityImage from "@/components/sanity/SanityImage"
-import { Badge } from "@/components/ui/badge"
 import type { PostCard as PostCardType } from "@/lib/sanity/types"
 import { formatDate } from "@/lib/format"
 import { cn } from "@/lib/utils"
@@ -18,8 +17,8 @@ export default function PostCard({
   return (
     <article
       className={cn(
-        "group grid gap-5 border-t-2 border-label-red pt-5",
-        featured && post.featuredImage?.asset && "md:grid-cols-[1.2fr_1fr]",
+        "group grid gap-6 border-t-2 border-night-soil pt-6",
+        featured && post.featuredImage?.asset && "md:grid-cols-[1.2fr_1fr] md:gap-10",
         className,
       )}
     >
@@ -31,29 +30,31 @@ export default function PostCard({
             height={450}
             fill
             sizes="(max-width: 768px) 100vw, 560px"
-            className="transition-transform duration-500 group-hover:scale-[1.03]"
+            className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
         </Link>
       )}
       <div className="flex flex-col gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-foreground/50">
+        <p className="eyebrow text-ink-soft">
           <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
           {post.isFeatured && <span className="ml-3 text-label-red">Featured</span>}
         </p>
-        <h3 className={cn("font-display tracking-[0.04em] leading-tight text-foreground", featured ? "text-3xl md:text-4xl" : "text-2xl")}>
+        <h3 className={cn("text-foreground", featured ? "display-2" : "display-3")}>
           <Link href={href} className="transition-colors group-hover:text-label-red">
             {post.title}
           </Link>
         </h3>
-        {post.excerpt && <p className="font-sans text-base leading-relaxed text-foreground/70">{post.excerpt}</p>}
+        {post.excerpt && <p className={cn("font-sans leading-relaxed text-ink-soft", featured ? "body-lg" : "text-[1.05rem]")}>{post.excerpt}</p>}
         {post.categories?.length ? (
-          <div className="flex flex-wrap gap-1.5">
+          <ul className="flex flex-wrap gap-2">
             {post.categories.map((c) => (
-              <Badge key={c._id} variant="metadata" asChild>
-                <Link href={`/blog?category=${c.slug.current}`}>{c.title}</Link>
-              </Badge>
+              <li key={c._id}>
+                <Link href={`/blog?category=${c.slug.current}`} className="meta border border-night-soil/30 px-2 py-0.5 uppercase text-ink-soft hover:bg-night-soil hover:text-canvas-cream">
+                  {c.title}
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : null}
       </div>
     </article>

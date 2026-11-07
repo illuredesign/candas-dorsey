@@ -3,7 +3,6 @@ import PageShell from "@/components/layout/PageShell"
 import Prose from "@/components/sanity/Prose"
 import SanityImage from "@/components/sanity/SanityImage"
 import EmptyState from "@/components/content/EmptyState"
-import { Button } from "@/components/ui/button"
 import { getFlatProject } from "@/lib/sanity/fetch"
 import { buildMetadata } from "@/lib/metadata"
 
@@ -18,13 +17,20 @@ export default async function FlatPage() {
   return (
     <PageShell
       title={flat?.title ?? "The FLAT Project"}
-      subtitle="Candas @ Art"
+      subtitle="Art · Collaboration"
+      tone="ink"
       aside={
         flat?.externalUrl ? (
-          <div className="border-t-2 border-label-red pt-4">
-            <Button variant="dark" asChild>
-              <a href={flat.externalUrl} target="_blank" rel="noopener noreferrer">Visit truthandfiction.com ↗</a>
-            </Button>
+          <div className="bg-cadmium-yellow p-5 text-night-soil">
+            <p className="eyebrow">The project lives at</p>
+            <a
+              href={flat.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex h-11 items-center bg-night-soil px-5 pt-[3px] font-display text-base tracking-[0.12em] uppercase text-canvas-cream hover:bg-label-red"
+            >
+              truthandfiction.com ↗
+            </a>
           </div>
         ) : undefined
       }
@@ -34,11 +40,16 @@ export default async function FlatPage() {
       ) : (
         <>
           {flat.featuredImage?.asset && (
-            <figure className="mb-8">
-              <SanityImage image={flat.featuredImage} width={800} priority className="w-full" />
+            <figure className="mb-10">
+              <SanityImage image={flat.featuredImage} width={1000} priority className="w-full" />
+              {(flat.featuredImage.caption || flat.featuredImage.credit) && (
+                <figcaption className="meta mt-3 text-ink-soft">
+                  {[flat.featuredImage.caption, flat.featuredImage.credit && `Photo: ${flat.featuredImage.credit}`].filter(Boolean).join(" · ")}
+                </figcaption>
+              )}
             </figure>
           )}
-          <Prose value={flat.description} />
+          <Prose value={flat.description} className="body-lg" />
         </>
       )}
     </PageShell>

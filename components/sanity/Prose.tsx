@@ -46,7 +46,7 @@ const components: PortableTextComponents = {
       <figure className="my-8">
         <SanityImage image={value} width={800} className="w-full" />
         {(value?.caption || value?.credit) && (
-          <figcaption className="mt-2 font-mono text-[10px] tracking-[0.08em] text-foreground/50">
+          <figcaption className="mt-2 meta text-ink-soft">
             {value.caption}
             {value.caption && value.credit && " · "}
             {value.credit}
@@ -69,7 +69,7 @@ export default function Prose({
   return (
     <div
       className={cn(
-        "max-w-prose font-sans text-[17px] leading-[1.75] text-foreground [&>p]:mb-5 [&>p:last-child]:mb-0 [&_strong]:font-semibold [&_em]:italic",
+        "max-w-prose font-sans text-[1.125rem] leading-[1.7] text-foreground [&>p]:mb-5 [&>p:last-child]:mb-0 [&_strong]:font-semibold [&_em]:italic",
         className,
       )}
     >

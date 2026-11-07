@@ -24,8 +24,8 @@ export default function SocialLinks({ links, className, dark }: { links: SocialL
             target="_blank"
             rel="noopener noreferrer me"
             className={cn(
-              "font-mono text-[10px] uppercase tracking-[0.15em] transition-colors",
-              dark ? "text-canvas-cream/60 hover:text-warm-gold" : "text-foreground/60 hover:text-label-red",
+              "eyebrow transition-colors",
+              dark ? "text-cream-soft hover:text-cadmium-yellow" : "text-ink-soft hover:text-label-red",
             )}
           >
             {l.label || platformLabels[l.platform] || l.platform} ↗

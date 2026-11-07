@@ -7,34 +7,38 @@ export default async function SiteFooter() {
   const settings = await getSiteSettings()
 
   return (
-    <footer className="border-t border-foreground/10 bg-night-soil text-canvas-cream">
-      <div className="flex w-full flex-col gap-12 px-6 py-12 sm:flex-row sm:items-start sm:justify-between">
-        {/* Wordmark + tagline */}
-        <div className="flex flex-col gap-4">
-          <div>
-            <Link href="/" className="font-display text-lg tracking-[0.1em] uppercase text-warm-gold">
-              Candas Jane Dorsey
+    <footer className="bg-night-soil text-canvas-cream">
+      {/* Giant wordmark band */}
+      <div className="border-b border-canvas-cream/15">
+        <div className="container-x py-10 md:py-14">
+          <p className="display-hero text-canvas-cream" aria-hidden>
+            Candas <span className="text-cadmium-yellow">Jane</span> Dorsey
+          </p>
+        </div>
+      </div>
+
+      <div className="container-x grid gap-12 py-12 md:grid-cols-[1.2fr_2fr] md:py-16">
+        <div className="flex flex-col gap-6">
+          <p className="lede max-w-md text-cream-soft">
+            {settings?.footerText ?? "Novelist. Poet. Visual artist. Editor. Publisher. Teacher. Advocate."}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/contact" className="label-block hover:bg-cadmium-yellow hover:text-night-soil">
+              Send a message
             </Link>
-            <p className="mt-2 max-w-xs font-sans text-sm leading-relaxed text-canvas-cream/50">
-              {settings?.footerText ?? "Novelist. Poet. Visual artist. Editor. Publisher. Teacher. Advocate."}
-            </p>
+            <Link href="/about/press" className="label-block bg-transparent outline outline-2 -outline-offset-2 outline-canvas-cream/40 hover:bg-canvas-cream hover:text-night-soil">
+              Press kit
+            </Link>
           </div>
           {settings?.socialLinks?.length ? <SocialLinks links={settings.socialLinks} dark /> : null}
         </div>
 
-        {/* Nav columns */}
-        <div className="grid grid-cols-2 gap-x-16 gap-y-8 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
           {footerNav.map((group) => (
-            <nav key={group.label} className="flex flex-col gap-2.5">
-              <span className="mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-canvas-cream/40">
-                {group.label}
-              </span>
+            <nav key={group.label} aria-label={group.label} className="flex flex-col gap-2">
+              <span className="eyebrow mb-2 text-cadmium-yellow">{group.label}</span>
               {group.items.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="font-sans text-sm text-canvas-cream/60 transition-colors hover:text-warm-gold"
-                >
+                <Link key={link.href} href={link.href} className="font-sans text-[1.05rem] text-cream-soft transition-colors hover:text-cadmium-yellow">
                   {link.label}
                 </Link>
               ))}
@@ -43,14 +47,11 @@ export default async function SiteFooter() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-canvas-cream/10 px-6 py-4">
-        <p className="font-mono text-[10px] tracking-[0.05em] text-canvas-cream/30">
-          &copy; {new Date().getFullYear()} Candas Jane Dorsey. All rights reserved.
-        </p>
-        <p className="font-mono text-[10px] tracking-[0.05em] text-canvas-cream/30">
-          Edmonton, Alberta · Treaty 6 territory
-        </p>
+      <div className="border-t border-canvas-cream/15">
+        <div className="container-x flex flex-wrap items-center justify-between gap-x-8 gap-y-2 py-5">
+          <p className="meta text-cream-mute">&copy; {new Date().getFullYear()} Candas Jane Dorsey</p>
+          <p className="meta text-cream-mute">Edmonton, Alberta · Treaty 6 territory · Métis Nation Region 4</p>
+        </div>
       </div>
     </footer>
   )

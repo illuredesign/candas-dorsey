@@ -97,10 +97,15 @@ export type ArtworkCard = {
   order?: number | null
   image: SanityImage
 }
+export type ArtworkNeighbour = { title: string; slug: Slug; image: SanityImage } | null
 export type Artwork = ArtworkCard & {
   series?: string | null
   description?: PortableTextBlock[] | null
   category?: { _id: string; title: string; slug: Slug } | null
+  position?: number | null
+  total?: number | null
+  prev?: ArtworkNeighbour
+  next?: ArtworkNeighbour
   siblings?: ArtworkCard[] | null
 }
 
@@ -114,6 +119,8 @@ export type GalleryCategory = {
   coverImage?: SanityImage
   count: number
   firstArtwork?: { image: SanityImage } | null
+  preview?: { _id: string; title: string; image: SanityImage }[] | null
+  years?: (string | null)[] | null
 }
 export type GalleryCategoryWithArtworks = Pick<GalleryCategory, "_id" | "title" | "slug" | "description"> & {
   artworks: ArtworkCard[]
@@ -225,11 +232,18 @@ export type SiteSettings = {
   ogImage?: SanityImage
 }
 
+export type HomeSeries = { _id: string; title: string; slug: Slug; count: number; cover: SanityImage }
 export type HomeData = {
   latestBook?: BookCard | null
   upcomingBook?: BookCard | null
+  recentBooks?: BookCard[] | null
   nextEvent?: EventCard | null
+  nextExhibition?: ExhibitionCard | null
   latestPost?: PostCard | null
+  series?: HomeSeries[] | null
+  artworks?: ArtworkCard[] | null
+  about?: { title: string; featuredImage?: SanityImage; intro?: string | null } | null
+  counts?: { books: number; artworks: number; series: number } | null
 }
 
 type SitemapEntry = { slug: string; _updatedAt: string }

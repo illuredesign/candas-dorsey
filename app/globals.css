@@ -181,120 +181,200 @@
 
 /*
  * ══════════════════════════════════════════
- *  Intrinsic Layout System
- *  Grid, subgrid, container queries
+ *  Layout, type and motion utilities
+ *  Flat colour fields, hard edges, one reveal recipe.
  * ══════════════════════════════════════════
  */
 
-/* ── Page-level container ── */
-.page-container {
-  --page-gutter: clamp(1rem, 4vw, 3.5rem);
-  display: grid;
-  grid-template-columns:
-    [full-start] var(--page-gutter)
-    [content-start] 1fr
-    [content-end] var(--page-gutter)
-    [full-end];
-}
-.page-container > * {
-  grid-column: content;
-}
-.page-container > .full-bleed {
-  grid-column: full;
+:root {
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --site-max: 1536px;
+  /* Readable "soft ink" that still passes 4.5:1 on cream (don't use opacity for text). */
+  --color-ink-soft: oklch(0.42 0.045 60);
+  --color-ink-mute: oklch(0.52 0.06 58);
+  --color-cream-soft: oklch(0.86 0.03 80);
+  --color-cream-mute: oklch(0.76 0.035 80);
+  /* Explicit font stacks: @theme inline does not emit variables, so utilities below need these. */
+  --ff-serif: var(--font-eb-garamond), "EB Garamond", Georgia, serif;
+  --ff-label: var(--font-bebas-neue), "Bebas Neue", Impact, sans-serif;
+  --ff-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* ── Content grid — intrinsic 12-col with fluid gutters ── */
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: clamp(0.75rem, 2vw, 1.5rem);
+@theme inline {
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-mute: var(--color-ink-mute);
+  --color-cream-soft: var(--color-cream-soft);
+  --color-cream-mute: var(--color-cream-mute);
 }
 
-/* ── Container query contexts ── */
-.cq {
-  container-type: inline-size;
-}
-.cq-normal {
-  container-type: normal;
-}
-
-/* ── Hero grid: 2-zone layout ── */
-.hero-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr;
-  align-items: end;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: clamp(1.5rem, 4vw, 3.5rem);
-  padding-top: clamp(3.5rem, 8vh, 5rem);
-  padding-bottom: clamp(2.5rem, 6vh, 5.5rem);
-}
-
-/* Mobile: single column, letters above content */
-@media (max-width: 767px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-    gap: clamp(0.75rem, 3vw, 1.5rem);
-    padding: clamp(1rem, 4vw, 1.5rem);
-    padding-top: clamp(3rem, 8vh, 4rem);
-    padding-bottom: clamp(2rem, 4vh, 3.5rem);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-cadmium-yellow);
+    color: var(--color-night-soil);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-cobalt-blue);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-/* Short viewport: collapse to single column, letters go horizontal */
-@media (max-height: 700px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-    gap: clamp(0.5rem, 2vh, 1rem);
-    padding-top: clamp(3rem, 8vh, 4rem);
-    padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+@layer components {
+  /* One site-wide container: header, footer and every page share these gutters. */
+  .container-x {
+    width: 100%;
+    max-width: var(--site-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
-  .hero-stacked {
-    flex-direction: row !important;
-    align-items: center !important;
+  /* Full-bleed colour band; put a .container-x inside. */
+  .band {
+    width: 100%;
   }
-  .hero-stacked .hero-spacer {
+
+  /* Type scale — display is Bebas Neue, which sets tight; letter-spacing opens it up. */
+  /*
+   * Three faces: EB Garamond carries display *and* text (editorial, like the
+   * best publisher sites); Bebas Neue is the "label" face for nav, buttons and
+   * the red label blocks; JetBrains Mono is metadata only.
+   */
+  .display-hero {
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    font-size: clamp(3.75rem, 11vw, 11.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+  }
+  .display-1 {
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    font-size: clamp(2.75rem, 6.5vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .display-2 {
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.8vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+  .display-3 {
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .display-4 {
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    font-size: clamp(1.2rem, 1.5vw, 1.4rem);
+    line-height: 1.15;
+  }
+  /* Mono eyebrow / metadata. Never smaller than 12px. */
+  .eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .meta {
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+  /* Editorial body copy */
+  .lede {
+    font-family: var(--ff-serif);
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    line-height: 1.45;
+  }
+  .body-lg {
+    font-family: var(--ff-serif);
+    font-size: 1.1875rem;
+    line-height: 1.6;
+  }
+
+  /* Red "label" block, lifted from the collage labels in her work */
+  .label-block {
     display: inline-block;
+    background: var(--color-label-red);
+    color: var(--color-canvas-cream);
+    font-family: var(--ff-label);
+    font-size: 0.875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.8rem 0.3rem;
+    line-height: 1;
   }
-}
 
-/* ── Hero fluid typography ── */
-.hero-letter {
-  font-size: clamp(36px, 6.5vw, 80px);
-  letter-spacing: 0.05em;
-}
-.hero-subtitle {
-  font-size: clamp(20px, 3.5vw, 42px);
-}
+  /* Link with a hard underline that fills on hover */
+  .link-ink {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.25s ease, color 0.2s ease;
+  }
+  .link-ink:hover {
+    background-size: 100% 2px;
+  }
 
-@media (max-width: 767px) {
-  .hero-letter {
-    font-size: clamp(24px, 8vw, 48px);
+  /* Masonry columns for artwork grids */
+  .masonry {
+    columns: 1;
+    column-gap: 1.5rem;
   }
-  .hero-subtitle {
-    font-size: clamp(16px, 5vw, 28px);
+  @media (min-width: 640px) { .masonry { columns: 2; } }
+  @media (min-width: 1024px) { .masonry { columns: 3; column-gap: 2rem; } }
+  .masonry > * {
+    break-inside: avoid;
+    margin-bottom: 2rem;
   }
-}
 
-@media (max-height: 700px) {
-  .hero-letter {
-    font-size: clamp(24px, 5vh, 48px);
+  /* Horizontal strip with snap, no visible scrollbar */
+  .strip {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-inline: var(--gutter);
+    scrollbar-width: none;
   }
-  .hero-subtitle {
-    font-size: clamp(14px, 2.8vh, 28px);
-  }
-}
+  .strip::-webkit-scrollbar { display: none; }
+  .strip > * { scroll-snap-align: start; flex: 0 0 auto; }
 
-/* ── Portrait mask: fade top + fade left edge ── */
-.portrait-mask {
-  mask-image:
-    linear-gradient(to top, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 95%),
-    linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 15%);
-  mask-composite: intersect;
-  -webkit-mask-image:
-    linear-gradient(to top, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 95%),
-    linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 15%);
-  -webkit-mask-composite: source-in;
+  /* Halftone portrait on flat colour — multiply keeps the dots black. */
+  .halftone {
+    mix-blend-mode: multiply;
+    filter: contrast(1.05);
+  }
+
+  /* Marquee */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
 }

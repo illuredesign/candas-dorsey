@@ -71,7 +71,9 @@ export const allGalleryCategoriesQuery = defineQuery(`
     _id, title, slug, description, symbol, order,
     coverImage ${imageFields},
     "count": count(*[_type == "artwork" && references(^._id)]),
-    "firstArtwork": *[_type == "artwork" && references(^._id)] | order(order asc)[0] { image ${imageFields} }
+    "firstArtwork": *[_type == "artwork" && references(^._id)] | order(order asc)[0] { image ${imageFields} },
+    "preview": *[_type == "artwork" && references(^._id)] | order(order asc)[0...3] { _id, title, image ${imageFields} },
+    "years": *[_type == "artwork" && references(^._id) && defined(year)].year
   }
 `)
 
@@ -87,6 +89,10 @@ export const artworkBySlugQuery = defineQuery(`
     _id, title, slug, year, medium, dimensions, series, status, price, watermarkImage, description,
     image ${imageFields},
     "category": category-> { _id, title, slug },
+    "position": count(*[_type == "artwork" && category._ref == ^.category._ref && order < ^.order]) + 1,
+    "total": count(*[_type == "artwork" && category._ref == ^.category._ref]),
+    "prev": *[_type == "artwork" && category._ref == ^.category._ref && order < ^.order] | order(order desc)[0] { title, slug, image ${imageFields} },
+    "next": *[_type == "artwork" && category._ref == ^.category._ref && order > ^.order] | order(order asc)[0] { title, slug, image ${imageFields} },
     "siblings": *[_type == "artwork" && category._ref == ^.category._ref && _id != ^._id] | order(order asc, title asc)[0...6] ${artworkCard}
   }
 `)
@@ -199,8 +205,22 @@ export const siteSettingsQuery = defineQuery(`
 export const homeQuery = defineQuery(`{
   "latestBook": *[_type == "book" && isUpcoming != true] | order(year desc, order asc)[0] ${bookCard},
   "upcomingBook": *[_type == "book" && isUpcoming == true] | order(order asc)[0] ${bookCard},
+  "recentBooks": *[_type == "book" && isUpcoming != true] | order(year desc, order asc)[0...6] ${bookCard},
   "nextEvent": *[_type == "event" && coalesce(endDate, date) >= now()] | order(date asc)[0] ${eventCard},
-  "latestPost": *[_type == "blogPost"] | order(publishedAt desc)[0] ${postCard}
+  "nextExhibition": *[_type == "exhibition" && coalesce(endDate, startDate) >= now()] | order(startDate asc)[0] ${exhibitionCard},
+  "latestPost": *[_type == "blogPost"] | order(publishedAt desc)[0] ${postCard},
+  "series": *[_type == "galleryCategory"] | order(order asc) {
+    _id, title, slug,
+    "count": count(*[_type == "artwork" && references(^._id)]),
+    "cover": coalesce(coverImage, *[_type == "artwork" && references(^._id)] | order(order asc)[0].image) ${imageFields}
+  },
+  "artworks": *[_type == "artwork" && defined(image.asset)] | order(order asc, title asc)[0...10] ${artworkCard},
+  "about": *[_type == "page" && slug.current == "about"][0] { title, featuredImage ${imageFields}, "intro": pt::text(body[0]) },
+  "counts": {
+    "books": count(*[_type == "book"]),
+    "artworks": count(*[_type == "artwork"]),
+    "series": count(*[_type == "galleryCategory" && count(*[_type == "artwork" && references(^._id)]) > 0])
+  }
 }`)
 
 // ── Sitemap ──

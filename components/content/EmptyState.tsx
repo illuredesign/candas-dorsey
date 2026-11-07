@@ -7,9 +7,9 @@ export default function EmptyState({
   children?: React.ReactNode
 }) {
   return (
-    <div className="border border-dashed border-foreground/20 bg-warm-linen/60 px-6 py-12 text-center">
-      <p className="font-display text-xl tracking-[0.06em] text-foreground/70">{title}</p>
-      {children && <p className="mt-2 font-sans text-sm text-foreground/50">{children}</p>}
+    <div className="border-2 border-dashed border-night-soil/30 px-6 py-14 text-center">
+      <p className="display-3 text-foreground">{title}</p>
+      {children && <p className="mx-auto mt-3 max-w-md font-sans text-base text-ink-soft">{children}</p>}
     </div>
   )
 }

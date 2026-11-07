@@ -1,31 +1,46 @@
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
-/** Numbered mono label + display heading, matching the mood board sections. */
+/** Eyebrow + display heading with a hard rule, optional "view all" link and count. */
 export default function SectionHeading({
   label,
   title,
   id,
   href,
   linkLabel,
+  count,
+  dark,
+  className,
 }: {
   label?: string
   title: string
   id?: string
   href?: string
   linkLabel?: string
+  count?: number
+  dark?: boolean
+  className?: string
 }) {
   return (
-    <div id={id} className="mb-6 flex scroll-mt-20 flex-wrap items-end justify-between gap-3 border-b border-label-red/20 pb-3">
+    <div
+      id={id}
+      className={cn(
+        "mb-8 flex scroll-mt-24 flex-wrap items-end justify-between gap-4 border-b-2 pb-4",
+        dark ? "border-canvas-cream/30" : "border-night-soil",
+        className,
+      )}
+    >
       <div>
-        {label && (
-          <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-label-red">{label}</p>
-        )}
-        <h2 className="font-display text-3xl tracking-[0.04em] text-foreground md:text-4xl">{title}</h2>
+        {label && <p className={cn("eyebrow mb-2", dark ? "text-cadmium-yellow" : "text-label-red")}>{label}</p>}
+        <h2 className={cn("display-2 flex items-baseline gap-3", dark ? "text-canvas-cream" : "text-foreground")}>
+          {title}
+          {typeof count === "number" && <span className={cn("meta", dark ? "text-cream-mute" : "text-ink-mute")}>({count})</span>}
+        </h2>
       </div>
       {href && (
         <Link
           href={href}
-          className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-label-red"
+          className={cn("eyebrow link-ink transition-colors", dark ? "text-cream-soft hover:text-cadmium-yellow" : "text-ink-soft hover:text-label-red")}
         >
           {linkLabel ?? "View all"} →
         </Link>

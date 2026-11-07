@@ -12,15 +12,15 @@ const badgeVariants = cva(
         default:
           "bg-primary px-3 pt-[5px] pb-[3px] font-display text-[13px] tracking-[0.1em] uppercase text-primary-foreground [a]:hover:bg-primary/80",
         award:
-          "bg-accent/15 px-2.5 py-1 font-mono text-[9px] tracking-[0.08em] text-accent dark:bg-accent/10",
+          "bg-night-soil px-2.5 py-1 font-mono text-xs tracking-[0.06em] text-canvas-cream",
         metadata:
-          "bg-foreground/5 px-2.5 py-1 font-mono text-[9px] tracking-[0.08em] text-foreground/60 dark:bg-canvas-cream/8 dark:text-canvas-cream/60",
+          "border-night-soil/30 px-2.5 py-1 font-mono text-xs uppercase tracking-[0.06em] text-ink-soft",
         secondary:
-          "bg-secondary px-2.5 py-1 font-mono text-[10px] tracking-[0.06em] text-secondary-foreground [a]:hover:bg-secondary/80",
+          "bg-secondary px-2.5 py-1 font-mono text-xs tracking-[0.06em] text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
-          "bg-destructive/10 px-2.5 py-1 font-mono text-[10px] text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 [a]:hover:bg-destructive/20",
+          "bg-destructive/10 px-2.5 py-1 font-mono text-xs text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 [a]:hover:bg-destructive/20",
         outline:
-          "border-border px-2.5 py-1 font-mono text-[10px] tracking-[0.06em] text-foreground [a]:hover:bg-muted",
+          "border-border px-2.5 py-1 font-mono text-xs tracking-[0.06em] text-foreground [a]:hover:bg-muted",
       },
     },
     defaultVariants: {

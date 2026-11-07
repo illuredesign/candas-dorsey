@@ -72,9 +72,9 @@ export default async function EventOrExhibitionPage({ params }: Props) {
       subtitle={kind}
       aside={
         <div className="flex flex-col gap-6">
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 font-mono text-[11px] tracking-[0.06em]">
-            {start && <><dt className="uppercase text-foreground/40">When</dt><dd><time dateTime={start}>{formatDateRange(start, end)}</time></dd></>}
-            {venue && <><dt className="uppercase text-foreground/40">Where</dt><dd>{venueUrl ? <a href={venueUrl} target="_blank" rel="noopener noreferrer" className="text-label-red">{venue}</a> : venue}{city && <span className="block text-foreground/60">{city}</span>}{address && <span className="block whitespace-pre-line text-foreground/60">{address}</span>}</dd></>}
+          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 font-sans text-[1.05rem]">
+            {start && <><dt className="eyebrow pt-0.5 text-ink-soft">When</dt><dd><time dateTime={start}>{formatDateRange(start, end)}</time></dd></>}
+            {venue && <><dt className="eyebrow pt-0.5 text-ink-soft">Where</dt><dd>{venueUrl ? <a href={venueUrl} target="_blank" rel="noopener noreferrer" className="text-label-red">{venue}</a> : venue}{city && <span className="block text-ink-soft">{city}</span>}{address && <span className="block whitespace-pre-line text-ink-soft">{address}</span>}</dd></>}
           </dl>
           {item.externalUrl && (
             <Button variant="dark" asChild>
@@ -89,7 +89,7 @@ export default async function EventOrExhibitionPage({ params }: Props) {
         <figure className="mb-8">
           <SanityImage image={item.featuredImage} width={800} priority className="w-full" />
           {item.featuredImage.credit && (
-            <figcaption className="mt-2 font-mono text-[10px] tracking-[0.08em] text-foreground/50">Photo: {item.featuredImage.credit}</figcaption>
+            <figcaption className="mt-2 meta text-ink-soft">Photo: {item.featuredImage.credit}</figcaption>
           )}
         </figure>
       )}
@@ -117,7 +117,7 @@ export default async function EventOrExhibitionPage({ params }: Props) {
         </section>
       ) : null}
 
-      <p className="mt-12 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/50">
+      <p className="mt-12 eyebrow text-ink-soft">
         <Link href="/events" className="hover:text-label-red">← All events</Link>
       </p>
     </PageShell>

@@ -48,7 +48,7 @@ export default async function InterestsPage() {
                     <a href={l.url} target="_blank" rel="noopener noreferrer" className="font-display text-xl tracking-[0.04em] text-foreground transition-colors hover:text-label-red">
                       {l.title} ↗
                     </a>
-                    {l.description && <p className="mt-1 font-sans text-sm text-foreground/60">{l.description}</p>}
+                    {l.description && <p className="mt-1 font-sans text-base text-ink-soft">{l.description}</p>}
                   </li>
                 ))}
               </ul>

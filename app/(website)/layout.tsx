@@ -40,7 +40,7 @@ export default function WebsiteLayout({
 }) {
   return (
     <div
-      className={`${bebasNeue.variable} ${ebGaramond.variable} ${jetBrainsMono.variable} grid min-h-dvh grid-rows-[1fr] font-sans antialiased`}
+      className={`${bebasNeue.variable} ${ebGaramond.variable} ${jetBrainsMono.variable} grid min-h-dvh grid-cols-1 grid-rows-[1fr] font-sans antialiased`}
     >
       {children}
       <SanityLive />

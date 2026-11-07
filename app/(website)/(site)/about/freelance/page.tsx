@@ -26,14 +26,14 @@ export default async function FreelancePage() {
       subtitle="Freelance writing & editing"
       aside={
         <div className="flex flex-col gap-4 border-t-2 border-label-red pt-4">
-          <p className="font-sans text-sm text-foreground/70">
+          <p className="font-sans text-base text-ink-soft">
             Available for editing, writing, communications planning and workshops.
           </p>
           <Button variant="dark" asChild>
             <Link href="/contact?subject=Freelance%20enquiry">Enquire</Link>
           </Button>
           {settings?.woodenDoorUrl && (
-            <a href={settings.woodenDoorUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] uppercase tracking-[0.15em] text-label-red">
+            <a href={settings.woodenDoorUrl} target="_blank" rel="noopener noreferrer" className="eyebrow text-label-red">
               Wooden Door website ↗
             </a>
           )}

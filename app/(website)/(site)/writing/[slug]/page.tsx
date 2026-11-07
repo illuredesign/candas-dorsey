@@ -35,7 +35,7 @@ export default async function WritingPiecePage({ params }: Props) {
       subtitle={[formatWritingKind(piece.kind), piece.publishedIn && `in ${piece.publishedIn}`, piece.year].filter(Boolean).join(" · ")}
     >
       <Prose value={piece.body} className="mx-auto" />
-      <p className="mt-12 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/50">
+      <p className="mt-12 eyebrow text-ink-soft">
         <Link href="/writing" className="hover:text-label-red">← Other writing</Link>
       </p>
     </PageShell>

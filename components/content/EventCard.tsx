@@ -1,7 +1,7 @@
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
 import type { EventCard as EventCardType, ExhibitionCard } from "@/lib/sanity/types"
 import { formatDateRange, formatEventType } from "@/lib/format"
+import { cn } from "@/lib/utils"
 
 /** Normalises an event or exhibition to one shape for listing. */
 export function toListing(item: EventCardType | ExhibitionCard) {
@@ -31,32 +31,34 @@ export default function EventCard({ item, past }: { item: EventCardType | Exhibi
   const e = toListing(item)
   const start = e.start ? new Date(e.start) : null
   return (
-    <article className="group grid grid-cols-[72px_1fr] gap-5 border-t border-foreground/15 py-5 md:grid-cols-[96px_1fr]">
-      <div className={past ? "text-foreground/40" : "text-foreground"}>
+    <article
+      className={cn(
+        "group grid grid-cols-[88px_1fr] gap-6 border-t-2 border-night-soil py-6 md:grid-cols-[120px_1fr_auto] md:items-start",
+        past && "border-night-soil/20",
+      )}
+    >
+      <div className={past ? "text-ink-mute" : "text-foreground"}>
         {start ? (
           <time dateTime={e.start ?? undefined} className="block">
-            <span className="block font-display text-4xl leading-none tracking-[0.02em] md:text-5xl">
-              {start.toLocaleDateString("en-CA", { day: "numeric" })}
-            </span>
-            <span className="block font-mono text-[10px] uppercase tracking-[0.15em]">
-              {start.toLocaleDateString("en-CA", { month: "short", year: "numeric" })}
-            </span>
+            <span className="display-1 block">{start.toLocaleDateString("en-CA", { day: "numeric" })}</span>
+            <span className="eyebrow block">{start.toLocaleDateString("en-CA", { month: "short", year: "numeric" })}</span>
           </time>
         ) : (
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em]">TBA</span>
+          <span className="eyebrow">TBA</span>
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <Badge variant="metadata">{e.kind}</Badge>
-        <h3 className="font-display text-2xl leading-tight tracking-[0.04em] text-foreground">
+        <p className="eyebrow text-label-red">{e.kind}</p>
+        <h3 className="display-3 text-foreground">
           <Link href={e.href} className="transition-colors group-hover:text-label-red">
             {e.title}
           </Link>
         </h3>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground/50">
-          {[e.start && formatDateRange(e.start, e.end), e.place].filter(Boolean).join(" · ")}
-        </p>
+        <p className="meta text-ink-soft">{[e.start && formatDateRange(e.start, e.end), e.place].filter(Boolean).join(" · ")}</p>
       </div>
+      <Link href={e.href} className="eyebrow hidden self-center text-ink-soft transition-colors group-hover:text-label-red md:block">
+        Details →
+      </Link>
     </article>
   )
 }

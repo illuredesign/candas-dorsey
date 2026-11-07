@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params }: Props) {
           <figure className="mb-8">
             <SanityImage image={post.featuredImage} width={800} priority className="w-full" />
             {(post.featuredImage.caption || post.featuredImage.credit) && (
-              <figcaption className="mt-2 font-mono text-[10px] tracking-[0.08em] text-foreground/50">
+              <figcaption className="mt-2 meta text-ink-soft">
                 {[post.featuredImage.caption, post.featuredImage.credit].filter(Boolean).join(" · ")}
               </figcaption>
             )}
@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
         <Prose value={post.body} />
       </article>
-      <p className="mx-auto mt-12 max-w-prose font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/50">
+      <p className="mx-auto mt-12 max-w-prose eyebrow text-ink-soft">
         <Link href="/blog" className="hover:text-label-red">← All posts</Link>
       </p>
     </PageShell>

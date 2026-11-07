@@ -31,12 +31,12 @@ export default async function AboutSubPage({ params }: Props) {
         <figure className="mb-8">
           <SanityImage image={page.featuredImage} width={800} priority className="w-full" />
           {page.featuredImage.credit && (
-            <figcaption className="mt-2 font-mono text-[10px] tracking-[0.08em] text-foreground/50">Photo: {page.featuredImage.credit}</figcaption>
+            <figcaption className="mt-2 meta text-ink-soft">Photo: {page.featuredImage.credit}</figcaption>
           )}
         </figure>
       )}
       <Prose value={page.body} />
-      <p className="mt-12 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/50">
+      <p className="mt-12 eyebrow text-ink-soft">
         <Link href={parentHref} className="hover:text-label-red">← {page.parent?.title ?? "About"}</Link>
       </p>
     </PageShell>

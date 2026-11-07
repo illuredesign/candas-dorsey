@@ -21,7 +21,7 @@ export default function PressKitGate() {
 
   return (
     <form action={action} className="max-w-md border-t-2 border-label-red pt-6">
-      <Label htmlFor="password" className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] text-label-red">
+      <Label htmlFor="password" className="mb-2 block eyebrow text-label-red">
         Press kit password
       </Label>
       <div className="flex gap-2">
@@ -33,7 +33,7 @@ export default function PressKitGate() {
       {state.message && !state.success && (
         <p role="alert" className="mt-3 font-sans text-sm text-label-red">{state.message}</p>
       )}
-      <p className="mt-4 font-sans text-sm text-foreground/60">
+      <p className="mt-4 font-sans text-base text-ink-soft">
         Don&apos;t have it? <a href="/contact?subject=Press%20kit%20access" className="text-label-red underline underline-offset-4">Ask Candas</a> and she&apos;ll send it along.
       </p>
     </form>

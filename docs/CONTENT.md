@@ -38,13 +38,13 @@ Studio (/studio)  ──publish──►  Sanity dataset "production"
 
 | Page | Sanity document(s) | Renders with |
 | --- | --- | --- |
-| `/` hero and "what's new" strip | `siteSettings` (hero tagline, subtitle); latest `book`, `blogPost`, `event`/`exhibition`, `artwork` via `homeQuery` | `components/hero/*`, `components/home/HomeStrip.tsx` |
-| `/books`, `/books/novels` etc. | every `book`; `category` field picks the shelf, `isUpcoming` floats it to Forthcoming, `order` sorts within a shelf | `components/content/BookCard.tsx` |
+| `/` | `siteSettings` (hero tagline, subtitle); via `homeQuery`: forthcoming/latest `book` + 4 recent covers, `galleryCategory` tiles with counts, first 10 `artwork`s, next `event` and `exhibition`, latest `blogPost`, the `about` page image + first paragraph | `components/hero/Hero.tsx`, `components/home/{TwoDoors,SelectedWorks,NowStrip,AboutTeaser}.tsx` |
+| `/books`, `/books/novels` etc. | every `book`; `category` field picks the shelf, `isUpcoming` floats it to Forthcoming, `order` sorts within a shelf. A book without a cover scan gets a typographic cover in the shelf's colour | `components/content/BookCard.tsx`, `BookCover.tsx` |
 | `/books/<slug>` | one `book`: description, excerpt, editions, reviews, awards, purchase links, related books, SEO | `books/[slug]/page.tsx` |
 | `/writing`, `/writing/<slug>` | `writing` (stories, essays, poems, articles); an entry with a `url` and no body links out | `writing/*` |
 | `/gallery` | every `galleryCategory`; thumbnail is the category's cover image or its first artwork | `gallery/page.tsx` |
 | `/gallery/<category>` | the category plus its `artwork`s ordered by `order` then title | `components/content/ArtworkCard.tsx` |
-| `/gallery/<artwork>` | one `artwork`: image, year, medium, dimensions, series, status, price, description; "Enquire" links to the contact form | `components/content/ArtworkImage.tsx` (watermark overlay) |
+| `/gallery/<artwork>` | one `artwork`: image, year, medium, dimensions, series, status, price, description, position in series, prev/next by `order`; "Enquire" pre-fills the contact subject | `components/content/ArtworkViewer.tsx` (focus mode + watermark) |
 | `/blog`, `/blog/<slug>` | `blogPost` (+ `category` for the filter); search uses the `q` query string | `components/content/PostCard.tsx` |
 | `/events` | `event` and `exhibition`, merged; "upcoming" is computed from the date, never ticked by hand | `components/content/EventCard.tsx` |
 | `/about` | `page` with slug `about` plus any `page` whose `parent` is that page | `about/page.tsx`, `components/sanity/Prose.tsx` |
@@ -57,6 +57,19 @@ Studio (/studio)  ──publish──►  Sanity dataset "production"
 
 Singletons (`siteSettings`, `pressKit`, `flatProject`) cannot be duplicated or deleted
 from the Studio; everything else is a normal list under Writing / Art / Blog / About.
+
+## Design system in one paragraph
+
+Three faces: EB Garamond carries display *and* body text (`.display-hero` … `.display-4`,
+`.lede`, `.body-lg`), Bebas Neue is the label face for nav, buttons and the red
+`.label-block`, JetBrains Mono is metadata only (`.eyebrow`, `.meta`, never under 12px).
+Colour is flat and hard-edged: canvas-cream, night-soil, label-red, cadmium-yellow,
+cobalt-blue, emerald-green (availability). No gradients, no tinted overlays; text never
+uses opacity for "grey" (use `text-ink-soft` / `text-ink-mute`, which pass 4.5:1).
+One container (`.container-x`) and one reveal recipe (`components/motion/Reveal.tsx`,
+fade + 24px rise, once, honours reduced motion). Pages take a `tone` so each section of
+the site has its own colour field: books = ink, gallery = blue, events = red,
+about/contact = yellow.
 
 ## Rules we build components by
 

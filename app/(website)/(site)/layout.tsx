@@ -7,9 +7,9 @@ export default function SiteLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+    <div className="grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr_auto]">
       <SiteHeader />
-      <main>{children}</main>
+      <main id="main">{children}</main>
       <SiteFooter />
     </div>
   )

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import PageShell from "@/components/layout/PageShell"
 import EmptyState from "@/components/content/EmptyState"
-import { Badge } from "@/components/ui/badge"
+import Reveal from "@/components/motion/Reveal"
 import { getAllWriting } from "@/lib/sanity/fetch"
 import { buildMetadata } from "@/lib/metadata"
 import { formatWritingKind } from "@/lib/format"
@@ -18,27 +18,29 @@ export default async function WritingPage() {
   return (
     <PageShell
       title="For Your Reading Enjoyment"
-      subtitle="Other Writing"
-      lead="Stories, poems and essays that live outside the books — some to read here, some linked to where they were published."
+      subtitle={`Other writing · ${pieces.length} pieces`}
+      lead="Stories, poems and essays that live outside the books. Some to read here, some linked to where they were published."
+      tone="blue"
     >
       {pieces.length === 0 ? (
         <EmptyState>Shorter pieces will appear here as they are added.</EmptyState>
       ) : (
-        <ul className="divide-y divide-foreground/10 border-y border-foreground/10">
-          {pieces.map((p) => {
+        <ol className="border-t-2 border-night-soil">
+          {pieces.map((p, i) => {
             const href = p.hasBody ? `/writing/${p.slug.current}` : p.url ?? `/writing/${p.slug.current}`
             const external = !p.hasBody && !!p.url
             return (
-              <li key={p._id} className="group grid gap-2 py-5 md:grid-cols-[140px_1fr]">
-                <div className="flex flex-col gap-1">
-                  <Badge variant="metadata">{formatWritingKind(p.kind)}</Badge>
-                  {p.year && <span className="font-mono text-[10px] tracking-[0.1em] text-foreground/40">{p.year}</span>}
+              <Reveal as="li" key={p._id} className="group grid gap-3 border-b border-night-soil/20 py-6 md:grid-cols-[72px_160px_1fr] md:gap-6">
+                <span className="meta text-ink-mute">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <p className="eyebrow text-label-red">{formatWritingKind(p.kind)}</p>
+                  {p.year && <p className="meta mt-1 text-ink-soft">{p.year}</p>}
                 </div>
                 <div>
-                  <h2 className="font-display text-2xl tracking-[0.04em] text-foreground">
+                  <h2 className="display-3 text-foreground">
                     {external ? (
                       <a href={href} target="_blank" rel="noopener noreferrer" className="transition-colors group-hover:text-label-red">
-                        {p.title} ↗
+                        {p.title} <span className="meta align-middle">↗</span>
                       </a>
                     ) : (
                       <Link href={href} className="transition-colors group-hover:text-label-red">
@@ -46,15 +48,13 @@ export default async function WritingPage() {
                       </Link>
                     )}
                   </h2>
-                  {p.publishedIn && (
-                    <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground/50">in {p.publishedIn}</p>
-                  )}
-                  {p.excerpt && <p className="mt-2 max-w-prose font-sans text-base text-foreground/70">{p.excerpt}</p>}
+                  {p.publishedIn && <p className="mt-1 font-sans text-base italic text-ink-soft">in {p.publishedIn}</p>}
+                  {p.excerpt && <p className="mt-3 max-w-[60ch] font-sans text-[1.05rem] leading-relaxed text-ink-soft">{p.excerpt}</p>}
                 </div>
-              </li>
+              </Reveal>
             )
           })}
-        </ul>
+        </ol>
       )}
     </PageShell>
   )
