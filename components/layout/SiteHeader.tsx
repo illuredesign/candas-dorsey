@@ -70,7 +70,7 @@ export default function SiteHeader({ tone = "solid" }: { tone?: "solid" | "hero"
         className={cn(
           "z-40 w-full",
           hero
-            ? "absolute top-0 left-0 text-night-soil"
+            ? "absolute top-0 left-0 text-canvas-cream"
             : "sticky top-0 border-b border-night-soil/15 bg-canvas-cream/95 text-night-soil backdrop-blur supports-backdrop-filter:bg-canvas-cream/85",
         )}
       >
@@ -82,7 +82,7 @@ export default function SiteHeader({ tone = "solid" }: { tone?: "solid" | "hero"
             className="font-display text-[1.35rem] leading-none tracking-[0.06em] text-current md:text-2xl"
             aria-label="Candas Jane Dorsey, home"
           >
-            Candas <span className="text-label-red">Jane</span> Dorsey
+            Candas <span className={hero ? "text-cadmium-yellow" : "text-label-red"}>Jane</span> Dorsey
           </Link>
 
           {/* Desktop nav */}
@@ -91,7 +91,8 @@ export default function SiteHeader({ tone = "solid" }: { tone?: "solid" | "hero"
               const active = isActive(pathname, (link as NavGroup).href ?? "")
               const base = cn(
                 "relative inline-flex h-10 items-center gap-1 px-3 font-display text-[1.05rem] leading-none tracking-[0.1em] uppercase transition-colors",
-                "after:absolute after:inset-x-3 after:bottom-1 after:h-[3px] after:scale-x-0 after:bg-label-red after:transition-transform after:duration-300 after:origin-left",
+                "after:absolute after:inset-x-3 after:bottom-1 after:h-[3px] after:scale-x-0 after:transition-transform after:duration-300 after:origin-left",
+                hero ? "after:bg-cadmium-yellow" : "after:bg-label-red",
                 active ? "after:scale-x-100" : "hover:after:scale-x-100",
               )
               if (!isNavGroup(link)) {

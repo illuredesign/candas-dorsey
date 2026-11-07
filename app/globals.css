@@ -377,4 +377,64 @@
     animation: marquee 40s linear infinite;
   }
   .marquee:hover .marquee-track { animation-play-state: paused; }
+
+  /* ── Home hero ─────────────────────────────────────────────────────────
+     A stacked word column beside a short cream type block, both sitting
+     on the lower, darker third of the painting. The letters are sized from
+     the viewport height so the column always fits above the fold. */
+  .hero-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    height: 100%;
+    padding-inline: var(--gutter);
+    padding-top: 6rem;
+    padding-bottom: clamp(3.5rem, 7svh, 5.5rem);
+  }
+  .hero-stacked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-spacer { display: none; }
+  .hero-letter {
+    font-family: var(--ff-label);
+    font-size: clamp(2rem, calc((100svh - 10rem) / 11.6), 4.5rem);
+    line-height: 0.85;
+    letter-spacing: 0.04em;
+    text-shadow: 2px 2px 0 oklch(0.22 0.05 40 / 0.55), 0 0 18px oklch(0.22 0.05 40 / 0.35);
+  }
+  .hero-shadow {
+    text-shadow: 1px 1px 0 oklch(0.22 0.05 40 / 0.6), 0 2px 14px oklch(0.22 0.05 40 / 0.45);
+  }
+  @media (max-width: 767px), (max-height: 640px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 1fr auto;
+      gap: 1rem;
+      padding-top: 5rem;
+      padding-bottom: 2rem;
+    }
+    .hero-stacked {
+      flex-direction: row;
+      align-items: baseline;
+      justify-self: start;
+    }
+    .hero-stacked .hero-spacer { display: inline-block; }
+    .hero-letter { font-size: clamp(1.5rem, 7.2vw, 3rem); text-shadow: 1px 1px 0 oklch(0.22 0.05 40 / 0.6); }
+  }
+  /* Portrait: fade the top and left edges so it prints into the painting */
+  .portrait-mask {
+    mask-image:
+      linear-gradient(to top, #000 55%, transparent 96%),
+      linear-gradient(to right, transparent 0%, #000 18%);
+    mask-composite: intersect;
+    -webkit-mask-image:
+      linear-gradient(to top, #000 55%, transparent 96%),
+      linear-gradient(to right, transparent 0%, #000 18%);
+    -webkit-mask-composite: source-in;
+  }
 }

@@ -1,27 +1,7 @@
 import type { Metadata } from "next"
-import { Bebas_Neue, EB_Garamond, JetBrains_Mono } from "next/font/google"
 import { SanityLive } from "@/sanity/lib/live"
 import { siteUrl } from "@/lib/site"
 import "../globals.css"
-
-const bebasNeue = Bebas_Neue({
-  weight: "400",
-  variable: "--font-bebas-neue",
-  subsets: ["latin"],
-  display: "swap",
-})
-
-const ebGaramond = EB_Garamond({
-  variable: "--font-eb-garamond",
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-})
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  display: "swap",
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -40,7 +20,7 @@ export default function WebsiteLayout({
 }) {
   return (
     <div
-      className={`${bebasNeue.variable} ${ebGaramond.variable} ${jetBrainsMono.variable} grid min-h-dvh grid-cols-1 grid-rows-[1fr] font-sans antialiased`}
+      className="grid min-h-dvh grid-cols-1 grid-rows-[1fr] font-sans antialiased"
     >
       {children}
       <SanityLive />
