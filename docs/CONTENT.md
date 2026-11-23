@@ -38,7 +38,7 @@ Studio (/studio)  ──publish──►  Sanity dataset "production"
 
 | Page | Sanity document(s) | Renders with |
 | --- | --- | --- |
-| `/` | `siteSettings` (hero tagline, subtitle); via `homeQuery`: forthcoming/latest `book` + 4 recent covers, `galleryCategory` tiles with counts, first 10 `artwork`s, next `event` and `exhibition`, latest `blogPost`, the `about` page image + first paragraph | `components/hero/Hero.tsx`, `components/home/{TwoDoors,SelectedWorks,NowStrip,AboutTeaser}.tsx` |
+| `/` | `siteSettings` → **Home hero** group (headline + accent, red label, statement + accent phrase, roles line, honours lines, two buttons, portrait image; every field optional with a built-in fallback); via `homeQuery`: forthcoming/latest `book` + 4 recent covers, `galleryCategory` tiles with counts, first 10 `artwork`s, next `event` and `exhibition`, latest `blogPost`, the `about` page image + first paragraph | `components/hero/Hero.tsx`, `components/home/{TwoDoors,SelectedWorks,NowStrip,AboutTeaser}.tsx` |
 | `/books`, `/books/novels` etc. | every `book`; `category` field picks the shelf, `isUpcoming` floats it to Forthcoming, `order` sorts within a shelf. A book without a cover scan gets a typographic cover in the shelf's colour | `components/content/BookCard.tsx`, `BookCover.tsx` |
 | `/books/<slug>` | one `book`: description, excerpt, editions, reviews, awards, purchase links, related books, SEO | `books/[slug]/page.tsx` |
 | `/writing`, `/writing/<slug>` | `writing` (stories, essays, poems, articles); an entry with a `url` and no body links out | `writing/*` |

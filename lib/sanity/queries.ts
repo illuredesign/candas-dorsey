@@ -197,7 +197,10 @@ export const flatProjectQuery = defineQuery(`
 // ── Site settings (singleton) ──
 export const siteSettingsQuery = defineQuery(`
   *[_type == "siteSettings"][0] {
-    siteTitle, siteDescription, heroTagline, heroSubtitle, socialLinks, woodenDoorUrl, contactEmail, footerText, ogImage
+    siteTitle, siteDescription, socialLinks, woodenDoorUrl, contactEmail, footerText, ogImage,
+    heroHeadline, heroHeadlineAccent, heroLabel, heroTagline, heroTaglineAccent, heroSubtitle, heroAwards,
+    heroPrimaryCta { label, href }, heroSecondaryCta { label, href },
+    heroImage ${imageFields}
   }
 `)
 

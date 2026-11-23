@@ -220,11 +220,20 @@ export type FlatProject = {
 }
 
 export type SocialLink = { _key?: string; platform: string; url: string; label?: string | null }
+export type HeroCta = { label?: string | null; href?: string | null }
 export type SiteSettings = {
   siteTitle?: string | null
   siteDescription?: string | null
+  heroHeadline?: string | null
+  heroHeadlineAccent?: string | null
+  heroLabel?: string | null
   heroTagline?: string | null
+  heroTaglineAccent?: string | null
   heroSubtitle?: string | null
+  heroAwards?: (string | null)[] | null
+  heroPrimaryCta?: HeroCta | null
+  heroSecondaryCta?: HeroCta | null
+  heroImage?: SanityImage | null
   socialLinks?: SocialLink[] | null
   woodenDoorUrl?: string | null
   contactEmail?: string | null

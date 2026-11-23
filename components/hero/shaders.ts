@@ -1,3 +1,20 @@
+/**
+ * Hero painting, split into two passes so the expensive part can run at a
+ * lower internal resolution without changing the picture:
+ *
+ *  1. `noiseFragmentShader`  – the domain-warped fbm painting (≈26 simplex
+ *     evaluations per pixel). Rendered to an off-screen target at half the
+ *     device resolution; the field is smooth, so bilinear upscaling is
+ *     indistinguishable from rendering it at full size.
+ *  2. `compositeFragmentShader` – samples that target and applies the
+ *     pixel-frequency canvas weave, grain, vignette and colour cast at full
+ *     resolution, which is what keeps the surface looking crisp.
+ *
+ * The colour maths is byte-for-byte the original; the only tunable that
+ * changes the look is `u_ground`, which blends the dark maroon ground back
+ * toward the sky colour so the portrait printed over it stays visible.
+ */
+
 export const vertexShader = /* glsl */ `
 varying vec2 v_uv;
 void main() {
@@ -6,12 +23,7 @@ void main() {
 }
 `
 
-export const fragmentShader = /* glsl */ `
-precision highp float;
-varying vec2 v_uv;
-uniform float u_time;
-uniform vec2 u_resolution;
-
+const simplex = /* glsl */ `
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
@@ -59,6 +71,16 @@ float snoise(vec3 v) {
   m = m * m;
   return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
 }
+`
+
+export const noiseFragmentShader = /* glsl */ `
+precision highp float;
+varying vec2 v_uv;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_ground; // opacity of the dark ground: x = left edge, y = right edge
+
+${simplex}
 
 float fbm(vec3 p) {
   float v = 0.0, a = 0.5;
@@ -137,8 +159,32 @@ vec3 paintingColor(float n, vec2 uv) {
   float bleed = smoothstep(0.12, 0.22, vertBias + bleedNoise * 0.04);
   color = mix(groundColor, color, bleed);
 
+  // Let the painting show through the ground. 1.0 = the original opaque
+  // maroon; lower values fade it toward the sky so a portrait printed over
+  // the lower right stays visible. Weighted across x so the left (text)
+  // edge keeps more of its dark footing than the right (portrait) edge.
+  float groundOpacity = mix(u_ground.x, u_ground.y, smoothstep(0.35, 0.75, uv.x));
+  color = mix(skyColor, color, groundOpacity);
+
   return color;
 }
+
+void main() {
+  vec2 uv = v_uv;
+  float aspect = u_resolution.x / u_resolution.y;
+  vec2 scaledUV = vec2(uv.x * aspect, uv.y);
+  float n = warpedNoise(scaledUV, u_time);
+  gl_FragColor = vec4(paintingColor(n, uv), 1.0);
+}
+`
+
+export const compositeFragmentShader = /* glsl */ `
+precision highp float;
+varying vec2 v_uv;
+uniform sampler2D u_painting;
+uniform vec2 u_resolution;
+
+${simplex}
 
 float canvasTexture(vec2 uv) {
   vec2 texUV = uv * u_resolution * 0.5;
@@ -151,11 +197,7 @@ float canvasTexture(vec2 uv) {
 
 void main() {
   vec2 uv = v_uv;
-  float aspect = u_resolution.x / u_resolution.y;
-  vec2 scaledUV = vec2(uv.x * aspect, uv.y);
-
-  float n = warpedNoise(scaledUV, u_time);
-  vec3 color = paintingColor(n, uv);
+  vec3 color = texture2D(u_painting, uv).rgb;
 
   float tex = canvasTexture(uv);
   color *= tex;
