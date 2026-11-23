@@ -14,16 +14,25 @@ const TARGET_FPS = 30
 /** If a device cannot hold the target, ease to this rather than drop resolution. */
 const FLOOR_FPS = 20
 
-function Painting({ frameloop, ground }: { frameloop: Frameloop; ground: [number, number] }) {
-  const { gl, size, viewport, scene, camera, invalidate } = useThree()
-  const dpr = viewport.dpr
+/**
+ * Owns the GPU resources for the two-pass painting for the life of one WebGL
+ * context: a single off-screen target that is resized in place, and two
+ * materials whose uniform objects never change identity. (Replacing either
+ * on resize leaves three.js's compiled program pointing at stale uniform
+ * objects and a disposed texture, which renders black.)
+ */
+class Painter {
+  readonly target: THREE.WebGLRenderTarget
+  readonly noiseMat: THREE.ShaderMaterial
+  readonly compositeMat: THREE.ShaderMaterial
+  readonly offScene = new THREE.Scene()
+  readonly offCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+  private last = 0
+  private interval = 1000 / TARGET_FPS
+  private slow = 0
 
-  // Off-screen target for the expensive pass. Half float keeps the gradients
-  // smooth through the second pass; WebGL1 devices fall back to 8-bit.
-  const target = useMemo(() => {
-    const w = Math.max(1, Math.round(size.width * dpr * PAINT_SCALE))
-    const h = Math.max(1, Math.round(size.height * dpr * PAINT_SCALE))
-    return new THREE.WebGLRenderTarget(w, h, {
+  constructor(gl: THREE.WebGLRenderer) {
+    this.target = new THREE.WebGLRenderTarget(1, 1, {
       type: gl.capabilities.isWebGL2 ? THREE.HalfFloatType : THREE.UnsignedByteType,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
@@ -31,88 +40,103 @@ function Painting({ frameloop, ground }: { frameloop: Frameloop; ground: [number
       stencilBuffer: false,
       generateMipmaps: false,
     })
-  }, [gl, size.width, size.height, dpr])
-  useEffect(() => () => target.dispose(), [target])
-
-  const noiseMat = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader: noiseFragmentShader,
-        uniforms: {
-          u_time: { value: 0 },
-          u_resolution: { value: new THREE.Vector2(1, 1) },
-          u_ground: { value: new THREE.Vector2(ground[0], ground[1]) },
-        },
-        depthWrite: false,
-        depthTest: false,
-      }),
-    // ground is applied below so a prop change doesn't rebuild the material
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  )
-  useEffect(() => {
-    noiseMat.uniforms.u_ground.value.set(ground[0], ground[1])
-    invalidate()
-  }, [ground, noiseMat, invalidate])
-
-  const offScene = useMemo(() => {
-    const s = new THREE.Scene()
-    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), noiseMat)
+    this.noiseMat = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader: noiseFragmentShader,
+      uniforms: {
+        u_time: { value: 0 },
+        u_resolution: { value: new THREE.Vector2(1, 1) },
+        u_ground: { value: new THREE.Vector2(0.85, 0.4) },
+      },
+      depthWrite: false,
+      depthTest: false,
+    })
+    this.compositeMat = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader: compositeFragmentShader,
+      uniforms: {
+        u_painting: { value: this.target.texture },
+        u_resolution: { value: new THREE.Vector2(1, 1) },
+      },
+      depthWrite: false,
+      depthTest: false,
+    })
+    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.noiseMat)
     quad.frustumCulled = false
-    s.add(quad)
-    return s
-  }, [noiseMat])
-  const offCamera = useMemo(() => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), [])
+    this.offScene.add(quad)
+  }
 
-  const composite = useRef<THREE.ShaderMaterial>(null)
-  const clock = useRef({ last: 0, interval: 1000 / TARGET_FPS, slow: 0 })
+  resize(width: number, height: number, dpr: number) {
+    this.target.setSize(Math.max(1, Math.round(width * dpr * PAINT_SCALE)), Math.max(1, Math.round(height * dpr * PAINT_SCALE)))
+    this.compositeMat.uniforms.u_resolution.value.set(width * dpr, height * dpr)
+    this.noiseMat.uniforms.u_resolution.value.set(this.target.width, this.target.height)
+  }
+
+  setGround(left: number, right: number) {
+    this.noiseMat.uniforms.u_ground.value.set(left, right)
+  }
+
+  /** Returns false when the frame was skipped to hold the target cadence. */
+  render(gl: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, time: number, throttle: boolean) {
+    const now = performance.now()
+    const since = now - this.last
+    if (throttle && since < this.interval) return false
+
+    // Adaptive cadence: if frames keep arriving late, ease the target down.
+    if (this.last) {
+      this.slow = since > this.interval * 1.6 ? Math.min(this.slow + 1, 60) : Math.max(this.slow - 1, 0)
+      this.interval = 1000 / (this.slow > 30 ? FLOOR_FPS : TARGET_FPS)
+    }
+    this.last = now
+
+    this.noiseMat.uniforms.u_time.value = time
+    gl.setRenderTarget(this.target)
+    gl.render(this.offScene, this.offCamera)
+    gl.setRenderTarget(null)
+    gl.render(scene, camera)
+    return true
+  }
+
+  dispose() {
+    this.target.dispose()
+    this.noiseMat.dispose()
+    this.compositeMat.dispose()
+    this.offScene.traverse((o) => {
+      if (o instanceof THREE.Mesh) o.geometry.dispose()
+    })
+  }
+}
+
+function Painting({ frameloop, ground }: { frameloop: Frameloop; ground: [number, number] }) {
+  const { gl, size, viewport, scene, camera, invalidate } = useThree()
+  const dpr = viewport.dpr
+
+  const painter = useMemo(() => new Painter(gl), [gl])
+  useEffect(() => () => painter.dispose(), [painter])
+
+  useEffect(() => {
+    painter.resize(size.width, size.height, dpr)
+    invalidate()
+  }, [painter, size.width, size.height, dpr, invalidate])
+
+  useEffect(() => {
+    painter.setGround(ground[0], ground[1])
+    invalidate()
+  }, [painter, ground, invalidate])
 
   // Manual render so we can skip frames: with priority > 0, r3f leaves the
   // drawing to us and the last presented frame stays on screen when we skip.
+  const loop = useRef(frameloop)
+  useEffect(() => {
+    loop.current = frameloop
+  }, [frameloop])
   useFrame((state) => {
-    const now = performance.now()
-    const c = clock.current
-    const since = now - c.last
-    if (frameloop === "always" && since < c.interval) return
-
-    // Adaptive cadence: if frames keep arriving late, ease the target down.
-    if (c.last) {
-      if (since > c.interval * 1.6) c.slow = Math.min(c.slow + 1, 60)
-      else c.slow = Math.max(c.slow - 1, 0)
-      const fps = c.slow > 30 ? FLOOR_FPS : TARGET_FPS
-      c.interval = 1000 / fps
-    }
-    c.last = now
-
-    const w = size.width * dpr
-    const h = size.height * dpr
-    noiseMat.uniforms.u_time.value = state.clock.getElapsedTime()
-    noiseMat.uniforms.u_resolution.value.set(target.width, target.height)
-
-    gl.setRenderTarget(target)
-    gl.render(offScene, offCamera)
-    gl.setRenderTarget(null)
-
-    const m = composite.current
-    if (m) {
-      m.uniforms.u_painting.value = target.texture
-      m.uniforms.u_resolution.value.set(w, h)
-    }
-    gl.render(scene, camera)
+    painter.render(gl, scene, camera, state.clock.getElapsedTime(), loop.current === "always")
   }, 1)
 
   return (
-    <mesh frustumCulled={false}>
+    <mesh frustumCulled={false} material={painter.compositeMat}>
       <planeGeometry args={[2, 2]} />
-      <shaderMaterial
-        ref={composite}
-        vertexShader={vertexShader}
-        fragmentShader={compositeFragmentShader}
-        uniforms={{ u_painting: { value: null }, u_resolution: { value: new THREE.Vector2(1, 1) } }}
-        depthWrite={false}
-        depthTest={false}
-      />
     </mesh>
   )
 }
